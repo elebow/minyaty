@@ -1,0 +1,6 @@
+version: 2.0
+shards:
+  x11:
+    git: https://github.com/tamasszekeres/x11-cr.git
+    version: 1.0.1
+
