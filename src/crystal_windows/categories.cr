@@ -4,13 +4,10 @@ module CrystalWindows
   class Categories
     getter categories, last_category
 
-    @categories : Array(CrystalWindows::Category)
     @last_category : String?
 
-    def initialize(categories_config : Array(NamedTuple))
-      @categories = categories_config.map do |category_config|
-        Category.new(**category_config)
-      end
+    def initialize(categories : Array(Category))
+      @categories = categories
       @last_category = nil
     end
 

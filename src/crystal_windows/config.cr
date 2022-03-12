@@ -1,11 +1,14 @@
+require "yaml"
+
 require "./categories"
 
 module CrystalWindows
   class Config
     property categories, control_socket_path, config_file_path, debug_mode
 
-    @file_settings = {} of Symbol => String | Bool
+    @file_settings = YAML::Any #{} of Symbol => String | Bool
     @cli_settings = {} of Symbol => String | Bool
+    @config_file_contents = {} of YAML::Any => YAML::Any
 
     def initialize
       @config_file_path = (ENV["XDG_CONFIG_HOME"]? || "#{ENV["HOME"]}/.config").try do |base|
@@ -19,22 +22,31 @@ module CrystalWindows
 
       @control_socket_path = config_or_default(:control_socket_path, "/tmp/crystal_windows_control.socket").as(String) # TODO include machine name and X display
       @debug_mode = config_or_default(:debug_mode, false).as(Bool)
-      @categories = Categories.new([
-        { name: "terminal", patterns: ["kitty"] },
-        { name: "browsers", patterns: ["vivaldi-stable", "firefox", "chromium", "Navigator"] },
-        { name: "comms", patterns: ["thunderbird", "hexchat"] }
-      ])
+      @categories = Categories.new(
+        @config_file_contents["categories"].as_a.map do |category_h|
+          Category.new(
+            name: category_h["name"].as_s,
+            patterns: category_h["patterns"].as_a.map do |pattern|
+                        pattern.as_h?.try { |h| h.keys.first.to_s } || # TODO pass the values, as well
+                        pattern.as_s?.try { |s| s.to_s } ||
+                        ""
+                      end
+          )
+        end
+      )
     end
 
     private def load_from_config_file
+      @config_file_contents = File.open(config_file_path) { |io| YAML.parse(io) }.as_h
+      # TODO store these in @file_config so config_or_default can read them
     end
 
     private def load_from_command_line
       OptionParser.parse do |parser|
         parser.banner = "Usage: crystal_windows [arguments]"
         parser.on("-c PATH", "--config=PATH", "Path to the config file") { |p| config_file_path = p }
-        parser.on("-s PATH", "--socket=PATH", "Path to the control socket") { |p| @file_settings[:control_socket_path] = p }
-        parser.on("-d", "--debug", "Enable debug output") { @file_settings[:debug_mode] = true }
+        parser.on("-s PATH", "--socket=PATH", "Path to the control socket") { |p| @cli_settings[:control_socket_path] = p }
+        parser.on("-d", "--debug", "Enable debug output") { @cli_settings[:debug_mode] = true }
         parser.on("-h", "--help", "Show this help") do
           puts parser
           exit
@@ -48,7 +60,8 @@ module CrystalWindows
     end
 
     private def config_or_default(key, default)
-      @cli_settings[key]? || @file_settings[key]? || default
+      #@cli_settings[key]? || @file_settings[key]? || default
+      @cli_settings[key]? || default
     end
   end
 end
