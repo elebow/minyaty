@@ -49,10 +49,6 @@ module CrystalWindows
         map_above_and_focus(event.window)
       elsif event.is_a?(X11::DestroyWindowEvent)
         # TODO decide where to put focus. subtract one from index in current viewport?
-        # for now, just find and raise kitty
-        raise_window(find_window("kitty").first[:id])
-      else
-        CrystalWindows.debug "Got event #{event}. Doing nothing."
       end
     end
 
