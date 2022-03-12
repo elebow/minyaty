@@ -4,14 +4,12 @@ module CrystalWindows
   class X
     include X11::C
 
-    # getter display, property_atoms : Array(X11::C::Atom)
-
-    @@display = X11::Display.new
-    @@root_window : X11::C::Window = @@display.root_window(0)
-    @@property_atoms : Array(UInt64) = %w[WM_STATE WM_CLASS WM_NAME].map { |a| @@display.intern_atom(a, only_if_exists: true) }
+    DISPLAY = X11::Display.new
+    ROOT_WINDOW = DISPLAY.root_window(0)
+    PROPERTY_ATOMS = %w[WM_STATE WM_CLASS WM_NAME].map { |a| DISPLAY.intern_atom(a, only_if_exists: true) }
 
     def self.all_windows
-      query_all_windows(@@root_window)
+      query_all_windows(ROOT_WINDOW)
     end
 
     def self.find_window(str : String)
@@ -24,7 +22,7 @@ module CrystalWindows
     end
 
     def self.setup_event_monitoring
-      @@display.select_input(@@root_window, X11::C::SubstructureNotifyMask | X11::C::SubstructureRedirectMask)
+      DISPLAY.select_input(ROOT_WINDOW, X11::C::SubstructureNotifyMask | X11::C::SubstructureRedirectMask)
     end
 
     def self.raise_window(win : X11::C::Window)
@@ -33,8 +31,8 @@ module CrystalWindows
     end
 
     def self.hide_current_window
-      win = @@display.input_focus[:focus]
-      @@display.unmap_window(win)
+      win = DISPLAY.input_focus[:focus]
+      DISPLAY.unmap_window(win)
     end
 
     def self.handle_event(event)
@@ -52,15 +50,15 @@ module CrystalWindows
     end
 
     def self.pending_events
-      @@display.pending
+      DISPLAY.pending
     end
 
     def self.next_event
-      @@display.next_event
+      DISPLAY.next_event
     end
 
     private def self.configure_window_fullscreen(win)
-      @@display.configure_window(
+      DISPLAY.configure_window(
         win,
         1_u32 << 0 | 1_u32 << 1 | 1_u32 << 2 | 1_u32 << 3 | 1_u32 << 6,
         X11::WindowChanges.new(X11::C::X::WindowChanges.new(x: 0, y:0, width: 1920, height: 1080, stack_mode: 0))
@@ -68,16 +66,16 @@ module CrystalWindows
     end
 
     private def self.map_above_and_focus(win)
-      @@display.map_window(win)
-      @@display.set_input_focus(win, X11::C::RevertToParent, X11::C::CurrentTime)
+      DISPLAY.map_window(win)
+      DISPLAY.set_input_focus(win, X11::C::RevertToParent, X11::C::CurrentTime)
       # TODO bug? X11::C::RevertToNone is a UInt64 but set_input_focus wants a Int32
     end
 
-    private def self.query_all_windows(root) : Array(NamedTuple(id: UInt64, properties: Hash(String, Array(String) | Array(UInt16) | Array(UInt32) | Nil), attributes: X11::C::X::WindowAttributes))
+    private def self.query_all_windows(root) : Array(CrystalWindows::Window)
       # TODO rewrite this more nicely
-      return @@display.query_tree(root)[:children]
-                      .map { |child_id| build_hash(child_id) }
-                      .reject { |h| h[:attributes].map_state == X11::C::IsUnmapped }
+      return DISPLAY.query_tree(root)[:children]
+                    .map { |child_id| CrystalWindows::Window.new(child_id) }
+                    .reject { |h| h.attributes.map_state == X11::C::IsUnmapped }
       # @@display.query_tree(root)[:children]
       #  .map do |child_id|
       #    [build_hash(child_id), query_all_windows(child_id)]
@@ -95,7 +93,7 @@ module CrystalWindows
         id:         win,
         properties: @@property_atoms.to_h do |atom|
           {
-            @@display.atom_name(atom),
+            DISPLAY.atom_name(atom),
             get_property(atom, win),
           }
         end,
@@ -104,11 +102,11 @@ module CrystalWindows
       }
     end
 
-    private def self.get_property(atom, win)
+    def self.get_property(atom, win)
       # We have to use `X` directly because the higher-level method converts the result to a String.
       # Sometimes, the result contains \0 characters. TODO explain better.
       # TODO bug? AnyPropertyType is i64, but #get_window_property wants u64)
-      X11::C::X.get_window_property @@display, win, atom.to_u64, 0_i64, 1024_i64, X11::C::X::False, 0_u64, out actual_type_return, out actual_format_return, out nitems_return, out bytes_after_return, out prop_return
+      X11::C::X.get_window_property DISPLAY, win, atom.to_u64, 0_i64, 1024_i64, X11::C::X::False, 0_u64, out actual_type_return, out actual_format_return, out nitems_return, out bytes_after_return, out prop_return
       prop = {actual_type: actual_type_return, actual_format: actual_format_return, nitems: nitems_return, bytes_after: bytes_after_return, prop: prop_return}
       puts "incomplete get_window_property. #{prop}" if prop[:bytes_after] > 0
 
@@ -129,8 +127,8 @@ module CrystalWindows
       ret
     end
 
-    private def self.get_window_attributes(win)
-      X11::C::X.get_window_attributes(@@display, win, out window_attributes)
+    def self.get_window_attributes(win)
+      X11::C::X.get_window_attributes(DISPLAY, win, out window_attributes)
       window_attributes
     end
   end

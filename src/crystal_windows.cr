@@ -8,22 +8,18 @@ require "./crystal_windows/x"
 module CrystalWindows
   VERSION = "0.1.0"
 
-  @@config = Config.new
+  CONFIG = Config.new
+  CHANNEL = Channel(Symbol).new
 
   def self.debug(str)
-    puts str if @@config.debug_mode
+    puts str if CONFIG.debug_mode
   end
 
-  def self.channel_send(x)
-    @@channel.send(x)
-  end
-
-  socket = UNIXServer.new(@@config.control_socket_path)
-  @@channel = Channel(Symbol).new
+  socket = UNIXServer.new(CONFIG.control_socket_path)
 
   # It's important to exit nicely so we don't leave a lingering socket
-  Signal::INT.trap { channel_send(:exit) }
-  Signal::KILL.trap { channel_send(:exit) }
+  Signal::INT.trap { CHANNEL.send(:exit) }
+  Signal::KILL.trap { CHANNEL.send(:exit) }
 
   # Control fiber---monitors the control socket for commands from the user
   # Send commands with:
@@ -55,7 +51,7 @@ module CrystalWindows
   end
 
   # block the main fiber until we get an exit message (from the control fiber or a signal trap)
-  until @@channel.receive == :exit; end
+  until CHANNEL.receive == :exit; end
 
   socket.close
 end
