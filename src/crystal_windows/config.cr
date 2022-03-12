@@ -1,6 +1,8 @@
+require "./categories"
+
 module CrystalWindows
   class Config
-    property control_socket_path, config_file_path, debug_mode
+    property categories, control_socket_path, config_file_path, debug_mode
 
     @file_settings = {} of Symbol => String | Bool
     @cli_settings = {} of Symbol => String | Bool
@@ -17,6 +19,11 @@ module CrystalWindows
 
       @control_socket_path = config_or_default(:control_socket_path, "/tmp/crystal_windows_control.socket").as(String) # TODO include machine name and X display
       @debug_mode = config_or_default(:debug_mode, false).as(Bool)
+      @categories = Categories.new([
+        { name: "terminal", patterns: ["kitty"] },
+        { name: "browsers", patterns: ["vivaldi-stable", "firefox", "chromium", "Navigator"] },
+        { name: "comms", patterns: ["thunderbird", "hexchat"] }
+      ])
     end
 
     private def load_from_config_file

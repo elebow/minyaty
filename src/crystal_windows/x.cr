@@ -1,5 +1,7 @@
 require "x11"
 
+require "./window"
+
 module CrystalWindows
   class X
     include X11::C
@@ -13,12 +15,17 @@ module CrystalWindows
     end
 
     def self.find_window(str : String)
-      all_windows.select do |win|
-        ["WM_CLASS", "WM_NAME"].any? do |key|
-          values = win[:properties][key]
-          values.is_a?(Array(String)) && values.any?(&.includes?(str))
-        end
+      all_windows.select { |win| win.match?(str) }
+    end
+
+    def self.find_and_raise(str)
+      # TODO if more than one window matches, cycle them in order of window id (which should be a proxy for age?)
+      win = find_window(str).first?
+      unless win
+        CrystalWindows.debug "Tried to raise a window matching #{str}, but could not find any"
+        return
       end
+      raise_window(win.id)
     end
 
     def self.setup_event_monitoring
