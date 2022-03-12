@@ -4,7 +4,7 @@ module CrystalWindows
   class Category
     property name, patterns, windows, pointer
 
-    def initialize(name : String, patterns : Array(String))
+    def initialize(name : String, patterns : Array(NamedTuple(pattern: String, hints: Hash(String, String))))
       @name = name
       @patterns = patterns
       @windows = [] of Window
@@ -18,8 +18,12 @@ module CrystalWindows
       # We want the windows to be sorted by pattern order (as defined in config), then by window_id
       # for windows with the same pattern. TODO does X11 window_id always increase in reasonable cases?
       self.windows = patterns.map do |pattern|
-                                    all_windows.select { |win| win.match?(pattern) }
-                                               .sort_by { |win| win.id }
+                                    all_windows.select do |win|
+                                      match = win.match?(pattern[:pattern])
+                                      # augment Window obj with hints. Window#raise will use them if present.
+                                      win.hints = pattern[:hints] if match
+                                      match
+                                    end.sort_by { |win| win.id }
                              end
                              .reduce { |a, b| a + b } # TODO crystal's Array#reduce should take just a symbol like Ruby's
 

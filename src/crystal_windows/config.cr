@@ -26,10 +26,20 @@ module CrystalWindows
         @config_file_contents["categories"].as_a.map do |category_h|
           Category.new(
             name: category_h["name"].as_s,
-            patterns: category_h["patterns"].as_a.map do |pattern|
-                        pattern.as_h?.try { |h| h.keys.first.to_s } || # TODO pass the values, as well
-                        pattern.as_s?.try { |s| s.to_s } ||
-                        ""
+            patterns: category_h["patterns"].as_a.map do |pattern| # TODO better name than "pattern"
+                        if pattern.raw.is_a?(String)
+                          { pattern: pattern.as_s, hints: {} of String => String }
+                        elsif pattern.raw.is_a?(Hash)
+                          # Hashes in this situation must have exactly one element
+                          h = pattern.as_h
+                          {
+                            pattern: h.keys.first.as_s,
+                            hints: h.values.first.as_a.first.as_h.to_h { |k, v| {k.to_s, v.to_s} }
+                            # wow I hate this
+                          }
+                        else
+                          raise ConfigError.new("bad config")
+                        end
                       end
           )
         end
@@ -64,4 +74,6 @@ module CrystalWindows
       @cli_settings[key]? || default
     end
   end
+
+  class ConfigError < Exception; end
 end

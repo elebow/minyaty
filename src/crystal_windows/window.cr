@@ -3,9 +3,11 @@ require "./x"
 module CrystalWindows
   class Window
     getter id, properties, attributes
+    property hints
 
     @properties : Hash(String, Array(String) | Array(UInt16) | Array(UInt32) | Nil)
     @attributes : X11::C::X::WindowAttributes
+    @hints = {} of String => String
 
     def initialize(id : UInt64)
       @id = id
@@ -27,6 +29,7 @@ module CrystalWindows
     end
 
     def raise
+      puts "about to raise #{id}. hints: #{hints}"
       X.raise_window(id)
     end
 
