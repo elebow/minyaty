@@ -34,7 +34,7 @@ module CrystalWindows
     end
 
     def to_s(io)
-      io.puts "<#{self.class} id=#{id} properties=#{properties} attributes=#{attributes}>"
+      io.puts "<#{self.class} id=#{id} properties=#{properties} attributes=#{attributes} hints=#{hints}>"
     end
   end
 end
