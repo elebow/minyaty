@@ -25,7 +25,7 @@ module CrystalWindows
                                       match
                                     end.sort_by { |win| win.id }
                              end
-                             .reduce { |a, b| a + b } # TODO crystal's Array#reduce should take just a symbol like Ruby's
+                             .reduce { |a, b| a + b } # TODO crystal's Array#reduce should be able to take just a symbol like Ruby's
 
       #advance to where we left off, or start from the beginning again
       self.pointer = windows.index { |win| win.id == last_id } || 0
