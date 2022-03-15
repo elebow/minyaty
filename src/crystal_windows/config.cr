@@ -38,7 +38,7 @@ module CrystalWindows
                             # wow I hate this
                           }
                         else
-                          raise ConfigError.new("bad config")
+                          raise ConfigError.new("bad config") # TODO more detailed message
                         end
                       end
           )
