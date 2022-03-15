@@ -4,7 +4,7 @@ module CrystalWindows
   class Category
     property name, patterns, windows, pointer
 
-    def initialize(name : String, patterns : Array(NamedTuple(pattern: String, hints: Hash(String, String))))
+    def initialize(name : String, patterns : Array(NamedTuple(pattern: String, hints: WindowHints)))
       @name = name
       @patterns = patterns
       @windows = [] of Window

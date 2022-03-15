@@ -1,6 +1,7 @@
 require "yaml"
 
 require "./categories"
+require "./window"
 
 module CrystalWindows
   class Config
@@ -28,14 +29,20 @@ module CrystalWindows
             name: category_h["name"].as_s,
             patterns: category_h["patterns"].as_a.map do |pattern| # TODO better name than "pattern"
                         if pattern.raw.is_a?(String)
-                          { pattern: pattern.as_s, hints: {} of String => String }
+                          { pattern: pattern.as_s, hints: { x: nil, y: nil, width: nil, height: nil } }
                         elsif pattern.raw.is_a?(Hash)
-                          # Hashes in this situation must have exactly one element
                           h = pattern.as_h
+                          # Hashes in this situation must have exactly one element, hence #first
                           {
                             pattern: h.keys.first.as_s,
-                            hints: h.values.first.as_a.first.as_h.to_h { |k, v| {k.to_s, v.to_s} }
-                            # wow I hate this
+                            hints: h.values.first["hints"].as_h.try { |hints_h|
+                                     {
+                                       x: hints_h["x"].as_i?,
+                                       y: hints_h["y"].as_i?,
+                                       width: hints_h["width"].as_i?,
+                                       height: hints_h["height"].as_i?
+                                     }
+                                   }
                           }
                         else
                           raise ConfigError.new("bad config") # TODO more detailed message

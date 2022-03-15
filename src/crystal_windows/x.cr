@@ -32,8 +32,8 @@ module CrystalWindows
       DISPLAY.select_input(ROOT_WINDOW, X11::C::SubstructureNotifyMask | X11::C::SubstructureRedirectMask)
     end
 
-    def self.raise_window(win : X11::C::Window)
-      configure_window_fullscreen(win)
+    def self.raise_window(win : X11::C::Window, hints = { x: nil, y: nil, width: nil, height: nil })
+      configure_window_size_position(win, **hints)
       map_above_and_focus(win)
     end
 
@@ -61,11 +61,16 @@ module CrystalWindows
       DISPLAY.next_event
     end
 
-    private def self.configure_window_fullscreen(win)
+    private def self.configure_window_size_position(win, x = nil, y = nil, width = nil, height = nil)
+      # TODO actual screen dimensions, in config object
+      x ||= 0
+      y ||= 0
+      width ||= 1920
+      height ||= 1080
       DISPLAY.configure_window(
         win,
         1_u32 << 0 | 1_u32 << 1 | 1_u32 << 2 | 1_u32 << 3 | 1_u32 << 6,
-        X11::WindowChanges.new(X11::C::X::WindowChanges.new(x: 0, y:0, width: 1920, height: 1080, stack_mode: 0))
+        X11::WindowChanges.new(X11::C::X::WindowChanges.new(x: x, y: y, width: width, height: height, stack_mode: 0))
       )
     end
 
