@@ -5,11 +5,12 @@ require "./window"
 
 module CrystalWindows
   class Config
-    getter config_file_path
+    getter categories, config_file_path
 
     @file_settings = YAML::Any #{} of Symbol => String | Bool
     @cli_settings = {} of Symbol => String | Bool
     @config_file_contents = {} of YAML::Any => YAML::Any
+    @categories : Categories
 
     def initialize
       @config_file_path = (ENV["XDG_CONFIG_HOME"]? || "#{ENV["HOME"]}/.config").try do |base|
@@ -20,10 +21,13 @@ module CrystalWindows
       # user specifies a nonstandard config file location.
       load_from_command_line
       load_from_config_file
+
+      @categories = load_categories
     end
 
-    def categories
-      @categories ||= Categories.new(
+    private def load_categories
+      # Categories can only be defined in the config file, not on the command line
+      Categories.new(
         @config_file_contents["categories"].as_a.map do |category_h|
           Category.new(
             name: category_h["name"].as_s,
@@ -45,7 +49,7 @@ module CrystalWindows
                                    }
                           }
                         else
-                          raise ConfigError.new("bad config") # TODO more detailed message
+                          raise ConfigError.new("Category pattern is not a string or a hash: #{pattern}")
                         end
                       end
           )
