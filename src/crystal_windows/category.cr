@@ -16,7 +16,7 @@ module CrystalWindows
       last_id = windows.size > 0 ? windows[pointer].id : 0
 
       # We want the windows to be sorted by pattern order (as defined in config), then by window_id
-      # for windows with the same pattern. TODO does X11 window_id always increase in reasonable cases?
+      # for windows with the same pattern. X11 assigns window IDs unpredictably, but it's good enough.
       self.windows = patterns.map do |pattern|
                                     all_windows.select do |win|
                                       match = win.match?(pattern[:pattern])
