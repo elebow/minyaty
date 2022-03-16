@@ -12,7 +12,7 @@ module CrystalWindows
   CHANNEL = Channel(Symbol).new
 
   def self.debug(str)
-    puts str if CONFIG.debug_mode
+    puts str if CONFIG.debug_mode?
   end
 
   socket = UNIXServer.new(CONFIG.control_socket_path)

@@ -5,7 +5,7 @@ require "./window"
 
 module CrystalWindows
   class Config
-    property categories, control_socket_path, config_file_path, debug_mode
+    getter config_file_path
 
     @file_settings = YAML::Any #{} of Symbol => String | Bool
     @cli_settings = {} of Symbol => String | Bool
@@ -20,10 +20,10 @@ module CrystalWindows
       # user specifies a nonstandard config file location.
       load_from_command_line
       load_from_config_file
+    end
 
-      @control_socket_path = config_or_default(:control_socket_path, "/tmp/crystal_windows_control.socket").as(String) # TODO include machine name and X display
-      @debug_mode = config_or_default(:debug_mode, false).as(Bool)
-      @categories = Categories.new(
+    def categories
+      @categories ||= Categories.new(
         @config_file_contents["categories"].as_a.map do |category_h|
           Category.new(
             name: category_h["name"].as_s,
@@ -51,6 +51,16 @@ module CrystalWindows
           )
         end
       )
+    end
+
+    def control_socket_path
+      @control_socket_path ||= config_or_default(:control_socket_path,
+                                                 "/tmp/crystal_windows_control.socket")
+                                 .as(String) # TODO include machine name and X display
+    end
+
+    def debug_mode?
+      @debug_mode ||= config_or_default(:debug_mode, false).as(Bool)
     end
 
     private def load_from_config_file
