@@ -22,7 +22,7 @@ module CrystalWindows
                                       match = win.match?(pattern[:pattern])
                                       # Augment Window obj with hints. Window#raise will use them if
                                       # present. We have to do this here because a given window may
-                                      # have different hints in each category in which in appears
+                                      # have different hints each place it appears.
                                       win.hints = pattern[:hints] if match
                                       match
                                     end.sort_by { |win| win.id }
