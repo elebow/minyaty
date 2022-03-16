@@ -48,7 +48,8 @@ module CrystalWindows
                                    }
                           }
                         else
-                          raise ConfigError.new("Category pattern is not a string or a hash: #{pattern}")
+                          STDERR.puts "Category pattern is not a string or a hash: #{pattern}"
+                          { pattern: "", hints: { x: nil, y: nil, width: nil, height: nil } }
                         end
                       end
           )
