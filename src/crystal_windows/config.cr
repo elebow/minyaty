@@ -7,9 +7,8 @@ module CrystalWindows
   class Config
     getter categories, config_file_path
 
-    @file_settings = YAML::Any #{} of Symbol => String | Bool
     @cli_settings = {} of Symbol => String | Bool
-    @config_file_contents = {} of YAML::Any => YAML::Any
+    @file_settings = {} of YAML::Any => YAML::Any
     @categories : Categories
 
     def initialize
@@ -28,7 +27,7 @@ module CrystalWindows
     private def load_categories
       # Categories can only be defined in the config file, not on the command line
       Categories.new(
-        @config_file_contents["categories"].as_a.map do |category_h|
+        @file_settings["categories"].as_a.map do |category_h|
           Category.new(
             name: category_h["name"].as_s,
             patterns: category_h["patterns"].as_a.map do |pattern| # TODO better name than "pattern"
@@ -58,9 +57,8 @@ module CrystalWindows
     end
 
     def control_socket_path
-      @control_socket_path ||= config_or_default(:control_socket_path,
-                                                 "/tmp/crystal_windows_control.socket")
-                                 .as(String) # TODO include machine name and X display
+      @control_socket_path ||=
+        config_or_default(:control_socket_path, "/tmp/crystal_windows_control.socket").as(String) # TODO include machine name and X display
     end
 
     def debug_mode?
@@ -68,8 +66,7 @@ module CrystalWindows
     end
 
     private def load_from_config_file
-      @config_file_contents = File.open(config_file_path) { |io| YAML.parse(io) }.as_h
-      # TODO store these in @file_config so config_or_default can read them
+      @file_settings = File.open(config_file_path) { |io| YAML.parse(io) }.as_h
     end
 
     private def load_from_command_line
@@ -91,8 +88,7 @@ module CrystalWindows
     end
 
     private def config_or_default(key, default)
-      #@cli_settings[key]? || @file_settings[key]? || default
-      @cli_settings[key]? || default
+      @cli_settings[key]? || @file_settings[key]? || default
     end
   end
 
