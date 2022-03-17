@@ -92,6 +92,4 @@ module CrystalWindows
       @cli_settings[key]? || @file_settings[key]? || default
     end
   end
-
-  class ConfigError < Exception; end
 end

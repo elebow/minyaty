@@ -44,6 +44,8 @@ module CrystalWindows
 
     def self.handle_event(event)
       if event.is_a?(X11::ConfigureRequestEvent)
+        puts "got a configure event. detail: #{event.detail}"
+
         # TODO If window should be configured (dialog box, etc). Also mpv. Maybe make this a default allow, with denials in the config, since only vivaldi's non-dialog windows so far are a problem?
         #configure_window_size_position(event.window)
       elsif event.is_a?(X11::MapRequestEvent)
