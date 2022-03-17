@@ -19,7 +19,6 @@ module CrystalWindows
 
   # It's important to exit nicely so we don't leave a lingering socket
   Signal::INT.trap { CHANNEL.send(:exit) }
-  Signal::KILL.trap { CHANNEL.send(:exit) }
 
   # Control fiber---monitors the control socket for commands from the user
   # Send commands with:
