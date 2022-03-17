@@ -23,8 +23,7 @@ module CrystalWindows
 
   # Control fiber---monitors the control socket for commands from the user
   # Send commands with:
-  #   echo GET | socat UNIX-CONNECT:/tmp/crystal_windows_control.socket -
-  # TODO convenience tool (in this binary?) to do this
+  #   echo list-windows | socat UNIX-CONNECT:/tmp/crystal_windows_control.socket -
   spawn do
     loop do
       connection = socket.accept?
