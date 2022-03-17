@@ -81,20 +81,9 @@ module CrystalWindows
     end
 
     private def self.query_all_windows(root) : Array(CrystalWindows::Window)
-      # TODO rewrite this more nicely
       return DISPLAY.query_tree(root)[:children]
                     .map { |child_id| CrystalWindows::Window.new(child_id) }
                     .reject { |h| h.attributes.map_state == X11::C::IsUnmapped }
-      # @@display.query_tree(root)[:children]
-      #  .map do |child_id|
-      #    [build_hash(child_id), query_all_windows(child_id)]
-      #  #end.flatten.reject { |win| win[:properties]["WM_STATE"].nil? } # TODO 1 is normal, 3 is iconic. Use this information somehow.
-      #  end.flatten
-
-      ## How openbox removes insignificant windows:
-      # reject any children with IconWindowHint and icon_window != the window itself
-      # reject any of the WM's own windows
-      # reject any unmapped children
     end
 
     private def self.build_hash(win)
