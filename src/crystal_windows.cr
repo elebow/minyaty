@@ -36,15 +36,7 @@ module CrystalWindows
   spawn do
     CrystalWindows::X.setup_event_monitoring
     loop do
-      # Xlib's XNextEvent blocks, but Crystal doesn't seem to know that, so this Fiber does yield
-      # automatically. TODO: a way to declare a C function binding as blocking?
-      # In the meantime, use a dumb polling loop. It's fine for this application.
-
-      unless CrystalWindows::X.pending_events > 0
-        sleep 0.1
-        next
-      end
-
+      CrystalWindows::X.wait_for_event
       CrystalWindows::X.handle_event(CrystalWindows::X.next_event)
     end
   end

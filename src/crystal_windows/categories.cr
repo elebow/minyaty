@@ -30,6 +30,9 @@ module CrystalWindows
             end
       win.raise if win
 
+      # flush now because the event loop fiber might be blocked for a while
+      CrystalWindows::X::DISPLAY.flush
+
       @last_category = name
     end
 

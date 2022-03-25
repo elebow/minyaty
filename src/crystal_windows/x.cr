@@ -7,6 +7,7 @@ module CrystalWindows
     include X11::C
 
     DISPLAY = X11::Display.new
+    CONNECTION_FD = IO::FileDescriptor.new(DISPLAY.connection_number) # This only works on POSIX
     ROOT_WINDOW = DISPLAY.root_window(0)
     PROPERTY_ATOMS = %w[WM_STATE WM_CLASS WM_NAME].map { |a| DISPLAY.intern_atom(a, only_if_exists: true) }
 
@@ -55,8 +56,8 @@ module CrystalWindows
       end
     end
 
-    def self.pending_events
-      DISPLAY.pending
+    def self.wait_for_event
+      CONNECTION_FD.wait_readable
     end
 
     def self.next_event
