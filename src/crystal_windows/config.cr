@@ -28,7 +28,7 @@ module CrystalWindows
       # Categories can only be defined in the config file, not on the command line
       Categories.new(
         @file_settings["categories"].as_a.map do |category_h|
-          Category.new(
+          {
             name: category_h["name"].as_s,
             patterns: category_h["patterns"].as_a.map do |pattern| # TODO better name than "pattern"
                         if pattern.raw.is_a?(String)
@@ -52,7 +52,7 @@ module CrystalWindows
                           { pattern: "", hints: { x: nil, y: nil, width: nil, height: nil } }
                         end
                       end
-          )
+          }
         end
       )
     end

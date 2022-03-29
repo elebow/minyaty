@@ -4,15 +4,16 @@ module CrystalWindows
   class Categories
     getter categories, last_category
 
+    @categories : Array(Category)
     @last_category : String?
 
-    def initialize(categories : Array(Category))
-      @categories = categories
+    def initialize(categories)
+      @categories = categories.map { |cat_h| Category.new(cat_h["name"], patterns: cat_h["patterns"]) }
+      # TODO two categories that always exist: "all", "uncategorized"
       @last_category = nil
     end
 
     def [](name)
-      # TODO magic names "all" "uncategorized"
       cats = categories.select { |cat| cat.name == name }
       return cats.first if cats.is_a?(Array) && cats.size == 1
 
