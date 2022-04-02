@@ -2,7 +2,7 @@ require "x11"
 
 require "./window"
 
-module CrystalWindows
+module Minyaty
   class X
     include X11::C
 
@@ -23,7 +23,7 @@ module CrystalWindows
       # TODO if more than one window matches, cycle them in order of window id (which should be a proxy for age?)
       win = find_window(str).first?
       unless win
-        CrystalWindows.debug "Tried to raise a window matching #{str}, but could not find any"
+        Minyaty.debug "Tried to raise a window matching #{str}, but could not find any"
         return
       end
       raise_window(win.id)
@@ -83,9 +83,9 @@ module CrystalWindows
       # TODO bug? X11::C::RevertToNone is a UInt64 but set_input_focus wants a Int32
     end
 
-    private def self.query_all_windows(root) : Array(CrystalWindows::Window)
+    private def self.query_all_windows(root) : Array(Minyaty::Window)
       return DISPLAY.query_tree(root)[:children]
-                    .map { |child_id| CrystalWindows::Window.new(child_id) }
+                    .map { |child_id| Minyaty::Window.new(child_id) }
                     .reject { |h| h.attributes.map_state == X11::C::IsUnmapped }
     end
 

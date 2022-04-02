@@ -1,6 +1,6 @@
 require "./category"
 
-module CrystalWindows
+module Minyaty
   class Categories
     getter categories, last_category
 
@@ -32,14 +32,14 @@ module CrystalWindows
       win.raise if win
 
       # flush now because the event loop fiber might be blocked for a while
-      CrystalWindows::X::DISPLAY.flush
+      Minyaty::X::DISPLAY.flush
 
       @last_category = name
     end
 
     def refresh
       # get list of all windows from X11
-      all_windows = CrystalWindows::X.all_windows
+      all_windows = Minyaty::X.all_windows
 
       # pass the list to each category, which will save any matching window
       categories.each { |cat| cat.refresh(all_windows) }

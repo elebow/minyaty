@@ -1,6 +1,6 @@
 require "./window"
 
-module CrystalWindows
+module Minyaty
   class Category
     property name, patterns, windows, pointer
 

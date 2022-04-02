@@ -3,7 +3,7 @@ require "yaml"
 require "./categories"
 require "./window"
 
-module CrystalWindows
+module Minyaty
   class Config
     getter categories, config_file_path
 
@@ -13,7 +13,7 @@ module CrystalWindows
 
     def initialize
       @config_file_path = (ENV["XDG_CONFIG_HOME"]? || "#{ENV["HOME"]}/.config").try do |base|
-                            "#{base}/crystal_windows/config.yml"
+                            "#{base}/minyaty/config.yml"
                           end.as(String)
 
       # We have to parse the CLI args first (even though they have highest precedence) in case the
@@ -59,7 +59,7 @@ module CrystalWindows
 
     def control_socket_path
       @control_socket_path ||=
-        config_or_default(:control_socket_path, "/tmp/crystal_windows_control.socket").as(String) # TODO include machine name and X display
+        config_or_default(:control_socket_path, "/tmp/minyaty_control.socket").as(String) # TODO include machine name and X display
     end
 
     def debug_mode?
@@ -68,11 +68,12 @@ module CrystalWindows
 
     private def load_from_config_file
       @file_settings = File.open(config_file_path) { |io| YAML.parse(io) }.as_h
+      # TODO handle open failure
     end
 
     private def load_from_command_line
       OptionParser.parse do |parser|
-        parser.banner = "Usage: crystal_windows [arguments]"
+        parser.banner = "Usage: minyaty [arguments]"
         parser.on("-c PATH", "--config=PATH", "Path to the config file") { |p| config_file_path = p }
         parser.on("-s PATH", "--socket=PATH", "Path to the control socket") { |p| @cli_settings[:control_socket_path] = p }
         parser.on("-d", "--debug", "Enable debug output") { @cli_settings[:debug_mode] = true }

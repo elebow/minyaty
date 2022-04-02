@@ -1,12 +1,12 @@
-name: crystal-windows
+name: minyaty
 version: 0.1.0
 
 authors:
   - Eddie Lebow <elebow@users.noreply.github.com>
 
 targets:
-  crystalwindows:
-    main: src/crystal_windows.cr
+  minyaty:
+    main: src/minyaty.cr
 
 crystal: 1.3.2
 

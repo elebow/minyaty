@@ -1,11 +1,11 @@
 require "option_parser"
 require "socket"
 
-require "./crystal_windows/command"
-require "./crystal_windows/config"
-require "./crystal_windows/x"
+require "./minyaty/command"
+require "./minyaty/config"
+require "./minyaty/x"
 
-module CrystalWindows
+module Minyaty
   VERSION = "0.1.0"
 
   CONFIG = Config.new
@@ -22,7 +22,7 @@ module CrystalWindows
 
   # Control fiber---monitors the control socket for commands from the user
   # Send commands with:
-  #   echo list-windows | socat UNIX-CONNECT:/tmp/crystal_windows_control.socket -
+  #   echo list-windows | socat UNIX-CONNECT:/tmp/minyaty_control.socket -
   spawn do
     loop do
       connection = socket.accept?
@@ -34,10 +34,10 @@ module CrystalWindows
 
   # Event fiber---monitors X11 events and reacts to them
   spawn do
-    CrystalWindows::X.setup_event_monitoring
+    Minyaty::X.setup_event_monitoring
     loop do
-      CrystalWindows::X.wait_for_event
-      CrystalWindows::X.handle_event(CrystalWindows::X.next_event)
+      Minyaty::X.wait_for_event
+      Minyaty::X.handle_event(Minyaty::X.next_event)
     end
   end
 

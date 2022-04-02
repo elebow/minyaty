@@ -1,6 +1,6 @@
 require "./x"
 
-module CrystalWindows
+module Minyaty
   alias WindowHints = NamedTuple(x: Int32?, y: Int32?, width: Int32?, height: Int32?)
 
   class Window
