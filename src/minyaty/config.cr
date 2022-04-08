@@ -6,13 +6,15 @@ require "./window"
 module Minyaty
   class Config
     def initialize
-      config_file_path = (ENV["XDG_CONFIG_HOME"]? || "#{ENV["HOME"]}/.config").try do |base|
-                            "#{base}/minyaty/config.yml"
-                          end.as(String)
-
       # We have to parse the CLI args first (even though they have highest precedence) in case the
-      # user specifies a nonstandard config file location. TODO is that working?
+      # user specifies a nonstandard config file location.
       @config_cli = ConfigCLI.new
+
+      config_file_path = @config_cli.config_file_path \
+                         || (ENV["XDG_CONFIG_HOME"]? || "#{ENV["HOME"]}/.config").try do |base|
+                              "#{base}/minyaty/config.yml"
+                            end.as(String)
+
       @config_file = ConfigFile.new(config_file_path)
     end
 
