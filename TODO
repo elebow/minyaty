@@ -1,0 +1,4 @@
+--replace option
+
+taskbar shows categories in order defined in config file
+	config file can specify two special categories: all, uncategorized
