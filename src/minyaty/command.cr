@@ -22,6 +22,8 @@ module Minyaty
         CONFIG.categories.cycle(category_name)
       elsif string.starts_with?("hide-current-window")
         X.hide_current_window
+      elsif string.starts_with?("circulate-windows-down")
+        X.circulate_windows_down
       elsif string == "exit"
         CHANNEL.send(:exit)
       else
