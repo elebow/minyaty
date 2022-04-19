@@ -24,7 +24,19 @@ module Minyaty
       elsif string.starts_with?("hide-current-window")
         X.hide_current_window
       elsif string.starts_with?("circulate-windows-down")
+        CONFIG.last_circulation_direction = :down
         X.circulate_windows_down
+      elsif string.starts_with?("circulate-windows-up")
+        CONFIG.last_circulation_direction = :up
+        X.circulate_windows_up
+      elsif string.starts_with?("circulate-windows-alt")
+        if CONFIG.last_circulation_direction == :down
+          CONFIG.last_circulation_direction = :up
+          X.circulate_windows_up
+        else
+          CONFIG.last_circulation_direction = :down
+          X.circulate_windows_down
+        end
       elsif string == "exit"
         CHANNEL.send(:exit)
       else

@@ -51,6 +51,11 @@ module Minyaty
       DISPLAY.flush
     end
 
+    def self.circulate_windows_up
+      DISPLAY.circulate_subwindows_up(ROOT_WINDOW)
+      DISPLAY.flush
+    end
+
     def self.handle_event(event)
       if event.is_a?(X11::ConfigureRequestEvent)
         puts "got a configure event. detail: #{event.detail}"

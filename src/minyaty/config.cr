@@ -5,6 +5,8 @@ require "./window"
 
 module Minyaty
   class Config
+    property last_circulation_direction = :up
+
     def initialize
       # We have to parse the CLI args first (even though they have highest precedence) in case the
       # user specifies a nonstandard config file location.
