@@ -23,7 +23,7 @@ module Minyaty
       elsif string.starts_with?("hide-current-window")
         X.hide_current_window
       elsif string == "exit"
-        Minyaty::CHANNEL.send(:exit)
+        CHANNEL.send(:exit)
       else
         puts "unknown command: #{string}"
       end
