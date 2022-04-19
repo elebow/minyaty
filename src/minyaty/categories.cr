@@ -2,7 +2,8 @@ require "./category"
 
 module Minyaty
   class Categories
-    getter categories, last_category
+    getter categories
+    property last_category
 
     @categories : Array(Category)
     @last_category : String?

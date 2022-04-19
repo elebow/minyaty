@@ -16,6 +16,7 @@ module Minyaty
       elsif string == "list-windows"
         X.all_windows.each { |win| puts win }
       elsif string.starts_with?("raise-window")
+        CONFIG.categories.last_category = nil
         X.find_and_raise(string.lchop("raise-window").strip)
       elsif string.starts_with?("cycle-category")
         category_name = string.lchop("cycle-category").strip
