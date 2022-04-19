@@ -15,6 +15,10 @@ module Minyaty
       query_all_windows(ROOT_WINDOW)
     end
 
+    def self.current_window
+      DISPLAY.input_focus[:focus]
+    end
+
     def self.find_window(str : String)
       all_windows.select { |win| win.match?(str) }
     end
@@ -39,8 +43,7 @@ module Minyaty
     end
 
     def self.hide_current_window
-      win = DISPLAY.input_focus[:focus]
-      DISPLAY.unmap_window(win)
+      DISPLAY.unmap_window(current_window)
     end
 
     def self.handle_event(event)
