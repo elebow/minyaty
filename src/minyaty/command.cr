@@ -16,20 +16,27 @@ module Minyaty
       elsif string == "list-windows"
         X.all_windows.each { |win| puts win }
       elsif string.starts_with?("raise-window")
-        CONFIG.categories.last_category = nil
+        CONFIG.categories.last_category = nil # TODO configurable
+        CONFIG.last_circulation_direction = :up # TODO configurable
         X.find_and_raise(string.lchop("raise-window").strip)
       elsif string.starts_with?("cycle-category")
+        CONFIG.last_circulation_direction = :up
         category_name = string.lchop("cycle-category").strip
         CONFIG.categories.cycle(category_name)
       elsif string.starts_with?("hide-current-window")
+        CONFIG.categories.last_category = nil
+        CONFIG.last_circulation_direction = :up
         X.hide_current_window
       elsif string.starts_with?("circulate-windows-down")
+        CONFIG.categories.last_category = nil
         CONFIG.last_circulation_direction = :down
         X.circulate_windows_down
       elsif string.starts_with?("circulate-windows-up")
+        CONFIG.categories.last_category = nil
         CONFIG.last_circulation_direction = :up
         X.circulate_windows_up
       elsif string.starts_with?("circulate-windows-alt")
+        CONFIG.categories.last_category = nil
         if CONFIG.last_circulation_direction == :down
           CONFIG.last_circulation_direction = :up
           X.circulate_windows_up
