@@ -20,7 +20,7 @@ module Minyaty
   # It's important to exit nicely so we don't leave a lingering socket
   Signal::INT.trap { CHANNEL.send(:exit) }
 
-  # Control fiber---monitors the control socket for commands from the user
+  # Control fiber. Monitors the control socket for commands from the user.
   # Send commands with:
   #   echo list-windows | socat UNIX-CONNECT:/tmp/minyaty_control.socket -
   spawn do
@@ -32,7 +32,7 @@ module Minyaty
     end
   end
 
-  # Event fiber---monitors X11 events and reacts to them
+  # Event fiber. Monitors X11 events and reacts to them.
   spawn do
     Minyaty::X.setup_event_monitoring
     loop do
