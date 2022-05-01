@@ -30,6 +30,10 @@ module Minyaty
         # Categories can only be defined in the config file, not on the command line # TODO support CLI categories, eventually
         nil
       end
+
+      def taskbar_height
+        nil
+      end
     end
   end
 end

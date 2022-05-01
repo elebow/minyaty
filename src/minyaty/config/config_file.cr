@@ -51,6 +51,10 @@ module Minyaty
       def debug_mode?
         @file_config["debug"] == true
       end
+
+      def taskbar_height
+        @file_config["taskbar"]["height"].as_i?
+      end
     end
   end
 end

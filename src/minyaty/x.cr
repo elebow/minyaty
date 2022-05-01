@@ -80,9 +80,9 @@ module Minyaty
     private def self.configure_window_size_position(win, x = nil, y = nil, width = nil, height = nil)
       # TODO actual screen dimensions, in config object
       x ||= 0
-      y ||= 0
+      y ||= CONFIG.taskbar_height
       width ||= 1920
-      height ||= 1080
+      height ||= 1080 - CONFIG.taskbar_height
       DISPLAY.configure_window(
         win,
         1_u32 << 0 | 1_u32 << 1 | 1_u32 << 2 | 1_u32 << 3 | 1_u32 << 6,

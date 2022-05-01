@@ -33,6 +33,10 @@ module Minyaty
       @debug_mode ||= config_or_default(:debug_mode?, false).as(Bool)
     end
 
+    def taskbar_height
+      config_or_default(:taskbar_height, 0)
+    end
+
     private macro config_or_default(key, default)
       @config_cli.{{key.id}} || @config_file.{{key.id}} || {{default}}
     end
