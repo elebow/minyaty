@@ -11,3 +11,5 @@ non-WM mode, where minyaty is just a switcher
 new windows can steal focus only if child of current window
 	or share a non-root parent with current window?
 	configurable
+
+unmap event → circulate up?
