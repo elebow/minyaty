@@ -8,6 +8,8 @@ module Minyaty
     @categories : Array(Category)
     @last_category : String?
 
+    forward_missing_to @categories
+
     def initialize(categories)
       @categories = categories.map { |cat_h| Category.new(cat_h["name"], patterns: cat_h["patterns"]) }
       # TODO two categories that always exist: "all", "uncategorized"
