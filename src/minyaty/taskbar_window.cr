@@ -72,6 +72,8 @@ module Minyaty
     end
 
     def refresh(category_regions)
+      @window_item_locations = [] of NamedTuple(left: Int32, right: Int32, win: Window)
+
       category_width = (1920 / category_regions.size).to_i # TODO use real screen size. Also, weight by number of items?
       @positions = [] of NamedTuple(left: Int32, right: Int32, win: Window)
       category_regions.each_with_index do |category, i|
