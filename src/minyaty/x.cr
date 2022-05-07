@@ -94,6 +94,7 @@ module Minyaty
       DISPLAY.map_window(win)
       DISPLAY.set_input_focus(win, X11::C::RevertToParent, X11::C::CurrentTime)
       # TODO bug? X11::C::RevertToNone is a UInt64 but set_input_focus wants a Int32
+      DISPLAY.flush
     end
 
     private def self.query_all_windows(root) : Array(Minyaty::Window)
