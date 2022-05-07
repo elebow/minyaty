@@ -15,3 +15,5 @@ new windows can steal focus only if child of current window
 unmap event → circulate up?
 
 commands to show, hide, and toggle taskbar visibility
+
+taskbar clock
