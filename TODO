@@ -14,4 +14,4 @@ new windows can steal focus only if child of current window
 
 unmap event → circulate up?
 
-command to toggle taskbar visibility
+commands to show, hide, and toggle taskbar visibility
