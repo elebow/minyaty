@@ -3,6 +3,7 @@ require "socket"
 
 require "./minyaty/command"
 require "./minyaty/config"
+require "./minyaty/taskbar"
 require "./minyaty/x"
 
 module Minyaty
@@ -10,6 +11,7 @@ module Minyaty
 
   CONFIG = Config.new
   CHANNEL = Channel(Symbol).new
+  TASKBAR = Taskbar.new
 
   def self.debug(str)
     puts str if CONFIG.debug_mode?
@@ -38,6 +40,16 @@ module Minyaty
     loop do
       Minyaty::X.wait_for_event
       Minyaty::X.handle_event(Minyaty::X.next_event)
+    end
+  end
+
+  # Taskbar fiber. Periodically refreshes the items and clock.
+  if CONFIG.taskbar_enabled?
+    spawn do
+      loop do
+        TASKBAR.refresh
+        sleep 1 # TODO something more sophisticated. Refresh upon map/unmap event, once per second, and maybe some other events.
+      end
     end
   end
 
