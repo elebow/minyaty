@@ -26,3 +26,6 @@ taskbar click on currently-focused window circulates it up
 
 taskbar visual distinction for active window
 	and alternate window?
+
+bug: window items remain in taskbar after process ends
+	even though they don't show up in output of list-windows command
