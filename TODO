@@ -17,3 +17,6 @@ unmap event → circulate up?
 commands to show, hide, and toggle taskbar visibility
 
 taskbar clock
+
+Unhandled exception: Missing hash key: "patterns" (KeyError)
+	config file category without pattern
