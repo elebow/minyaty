@@ -29,6 +29,15 @@ module X11
   end
 end
 
+# TODO library bug, missing drawable arg at https://github.com/TamasSzekeres/x11-cr/blob/master/src/x11/display.cr#L4081
+module X11
+  class Display
+    def fill_rectangle(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, width : UInt32, height : UInt32) : Int32
+      X.fill_rectangle @dpy, d, gc, x, y, width, height
+    end
+  end
+end
+
 module Minyaty
   class TaskbarWindow
     @win : X11::C::Window
@@ -44,7 +53,7 @@ module Minyaty
         parent: Minyaty::X::ROOT_WINDOW,
         x: 0,
         y: 0,
-        width: 1830,
+        width: 1830, # TODO real dimensions from CONFIG
         height: 15,
         border_width: 0_u32,
         depth: 0,
