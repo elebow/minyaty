@@ -20,3 +20,9 @@ taskbar clock
 
 Unhandled exception: Missing hash key: "patterns" (KeyError)
 	config file category without pattern
+
+taskbar click on currently-focused window circulates it up
+	or other, configurable behavior
+
+taskbar visual distinction for active window
+	and alternate window?
