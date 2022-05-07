@@ -31,7 +31,13 @@ module Minyaty
         nil
       end
 
+      def taskbar_enabled?
+        # TODO
+        false
+      end
+
       def taskbar_height
+        # TODO
         nil
       end
     end

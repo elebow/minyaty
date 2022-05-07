@@ -33,6 +33,10 @@ module Minyaty
       @debug_mode ||= config_or_default(:debug_mode?, false).as(Bool)
     end
 
+    def taskbar_enabled?
+      config_or_default(:taskbar_enabled?, false)
+    end
+
     def taskbar_height
       config_or_default(:taskbar_height, 0)
     end
