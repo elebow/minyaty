@@ -22,12 +22,13 @@ module Minyaty
                                       match = win.match?(pattern[:pattern])
                                       # Augment Window obj with hints. Window#raise will use them if
                                       # present. We have to do this here because a given window may
-                                      # have different hints each place it appears.
+                                      # have different hints each place it appears (even possibly
+                                      # multiple times in a given category).
                                       win.hints = pattern[:hints] if match
                                       match
                                     end.sort_by { |win| win.id }
                              end
-                             .reduce { |a, b| a + b } # TODO crystal's Array#reduce should be able to take just a symbol like Ruby's
+                             .reduce { |a, b| a + b } # concatenate
 
       #advance to where we left off, or start from the beginning again
       self.pointer = windows.index { |win| win.id == last_id } || 0
