@@ -7,10 +7,21 @@ module Minyaty
 
       def initialize(path)
         @file_config = File.open(path) { |io| YAML.parse(io) }.as_h
-        # TODO handle open failure
+      rescue File::NotFoundError
+        puts "warning: could not open config file `#{path}`"
+        @file_config = YAML.parse(<<-YAML).as_h
+          categories:
+            - name: uncategorized
+              patterns: [""] # TODO patterns should not be specified for the magic "uncategorized" category
+        YAML
       end
 
       def categories
+        unless @file_config.has_key? "categories"
+          puts "error: config file missing requried key `categories`"
+          exit
+        end
+
         @file_config["categories"].as_a.map do |category_h|
           {
             name: category_h["name"].as_s,
@@ -57,6 +68,8 @@ module Minyaty
       end
 
       def taskbar_height
+        return 0 unless taskbar_enabled?
+
         @file_config["taskbar"]["height"].as_i?
       end
     end
