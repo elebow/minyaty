@@ -28,6 +28,7 @@ taskbar visual distinction for active window
 	and alternate window?
 
 taskbar click on category name cycles through
+	or anywhere in a category's region that is not a window item
 
 bug: window items remain in taskbar after process ends
 	even though they don't show up in output of list-windows command
