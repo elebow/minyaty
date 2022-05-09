@@ -10,6 +10,8 @@ module Minyaty
     CONNECTION_FD = IO::FileDescriptor.new(DISPLAY.connection_number) # This only works on POSIX
     ROOT_WINDOW = DISPLAY.root_window(0)
     PROPERTY_ATOMS = %w[WM_STATE WM_CLASS WM_NAME].map { |a| DISPLAY.intern_atom(a, only_if_exists: true) }
+    SCREEN_WIDTH = DISPLAY.width(DISPLAY.default_screen_number).to_u32
+    SCREEN_HEIGHT = DISPLAY.height(DISPLAY.default_screen_number)
 
     def self.all_windows
       query_all_windows(ROOT_WINDOW)
@@ -81,11 +83,10 @@ module Minyaty
     end
 
     private def self.configure_window_size_position(win, x = nil, y = nil, width = nil, height = nil)
-      # TODO actual screen dimensions, in config object
       x ||= 0
       y ||= CONFIG.taskbar_height
-      width ||= 1920
-      height ||= 1080 - CONFIG.taskbar_height
+      width ||= SCREEN_WIDTH
+      height ||= SCREEN_HEIGHT - CONFIG.taskbar_height
       DISPLAY.configure_window(
         win,
         1_u32 << 0 | 1_u32 << 1 | 1_u32 << 2 | 1_u32 << 3 | 1_u32 << 6,

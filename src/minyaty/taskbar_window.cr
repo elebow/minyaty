@@ -53,8 +53,8 @@ module Minyaty
         parent: Minyaty::X::ROOT_WINDOW,
         x: 0,
         y: 0,
-        width: 1830, # TODO real dimensions from CONFIG
-        height: 15,
+        width: Minyaty::X::SCREEN_WIDTH - 100, # TODO leave space for clock, for now
+        height: 15, # TODO real dimensions from CONFIG
         border_width: 0_u32,
         depth: 0,
         c_class: 0_u32,
@@ -76,7 +76,7 @@ module Minyaty
 
       Minyaty::X::DISPLAY.clear_window(@win)
 
-      category_width = (1920 / category_regions.size).to_i # TODO use real screen size. Also, weight by number of items?
+      category_width = (Minyaty::X::SCREEN_WIDTH / category_regions.size).to_i # TODO weight by number of items?
       @positions = [] of NamedTuple(left: Int32, right: Int32, win: Window)
       category_regions.each_with_index do |category, i|
         cursor = category_width * i
