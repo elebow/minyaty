@@ -49,7 +49,7 @@ module Minyaty
       end
 
       def debug_mode?
-        @file_config["debug"] == true
+        @file_config.has_key?("debug") && @file_config["debug"] == true
       end
 
       def taskbar_enabled?
