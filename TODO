@@ -31,3 +31,5 @@ taskbar click on category name cycles through
 
 bug: window items remain in taskbar after process ends
 	even though they don't show up in output of list-windows command
+
+Prefix output with program name so it can be easily extracted from xsession-errors file
