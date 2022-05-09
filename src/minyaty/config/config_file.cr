@@ -14,7 +14,7 @@ module Minyaty
         @file_config["categories"].as_a.map do |category_h|
           {
             name: category_h["name"].as_s,
-            patterns: category_h["patterns"].as_a.map do |pattern| # TODO better name than "pattern"
+            patterns: category_h["patterns"].as_a.map do |pattern|
                         if pattern.raw.is_a?(String)
                           { pattern: pattern.as_s, hints: { x: nil, y: nil, width: nil, height: nil } }
                         elsif pattern.raw.is_a?(Hash)
