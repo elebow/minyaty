@@ -54,7 +54,7 @@ module Minyaty
         x: 0,
         y: 0,
         width: Minyaty::X::SCREEN_WIDTH,
-        height: 15, # TODO real dimensions from CONFIG
+        height: CONFIG.taskbar_height.to_u,
         border_width: 0_u32,
         depth: 0,
         c_class: 0_u32,
