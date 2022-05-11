@@ -53,7 +53,7 @@ module Minyaty
         parent: Minyaty::X::ROOT_WINDOW,
         x: 0,
         y: 0,
-        width: Minyaty::X::SCREEN_WIDTH - 100, # TODO leave space for clock, for now
+        width: Minyaty::X::SCREEN_WIDTH,
         height: 15, # TODO real dimensions from CONFIG
         border_width: 0_u32,
         depth: 0,
@@ -72,11 +72,12 @@ module Minyaty
     end
 
     def refresh(category_regions)
+      #TODO break up this method
       @window_item_locations = [] of NamedTuple(left: Int32, right: Int32, win: Window)
 
       Minyaty::X::DISPLAY.clear_window(@win)
 
-      category_width = (Minyaty::X::SCREEN_WIDTH / category_regions.size).to_i # TODO weight by number of items?
+      category_width = (Minyaty::X::SCREEN_WIDTH / category_regions.size).to_i # TODO weight by number of items? TODO leave space for clock, if configured
       category_regions.each_with_index do |category, i|
         cursor = category_width * i
         Minyaty::X::DISPLAY.draw_line(@win, @gc, cursor, 0, cursor, 15)
@@ -96,6 +97,9 @@ module Minyaty
           cursor += 10 # TODO configurable space between items
         end
       end
+
+      cursor = (Minyaty::X::SCREEN_WIDTH - 120).to_i32
+      Minyaty::X::DISPLAY.draw_string(@win, @gc, cursor, 11, Time.local.to_s("%Y-%m-%d %H:%M:%S"))
 
       Minyaty::X::DISPLAY.flush
     end
