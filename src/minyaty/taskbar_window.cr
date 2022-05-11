@@ -68,7 +68,7 @@ module Minyaty
       @gc = Minyaty::X::DISPLAY.create_gc(@win, 0, gc_values)
       @font_struct = Minyaty::X::DISPLAY.query_font(X11.g_context_from_gc(@gc))
 
-      @window_item_locations = [] of NamedTuple(left: Int32, right: Int32, win: Window) # This is redundant, but the compiler doesn't know that @positions will always be set before access
+      @window_item_locations = [] of NamedTuple(left: Int32, right: Int32, win: Window) # This is redundant, but the compiler doesn't know that this variable will always be set before access
     end
 
     def refresh(category_regions)
@@ -77,7 +77,6 @@ module Minyaty
       Minyaty::X::DISPLAY.clear_window(@win)
 
       category_width = (Minyaty::X::SCREEN_WIDTH / category_regions.size).to_i # TODO weight by number of items?
-      @positions = [] of NamedTuple(left: Int32, right: Int32, win: Window)
       category_regions.each_with_index do |category, i|
         cursor = category_width * i
         Minyaty::X::DISPLAY.draw_line(@win, @gc, cursor, 0, cursor, 15)
