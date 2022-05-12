@@ -40,6 +40,8 @@ end
 
 module Minyaty
   class TaskbarWindow
+    getter win
+
     @win : X11::C::Window
     @gc : X11::C::X::GC
     @font_struct : X11::FontStruct

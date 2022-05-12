@@ -34,9 +34,10 @@ module Minyaty
     end
   end
 
+  Minyaty::X.setup_event_monitoring
+  Minyaty::X.all_windows.reject { |w| w.id == TASKBAR.taskbar_window.win }.each(&.raise) # Window#raise takes care of sizing and positioning
   # Event fiber. Monitors X11 events and reacts to them.
   spawn do
-    Minyaty::X.setup_event_monitoring
     loop do
       Minyaty::X.wait_for_event
       Minyaty::X.handle_event(Minyaty::X.next_event)
