@@ -29,7 +29,7 @@ module Minyaty
       win_item = taskbar_window.find_window_at_location(x)
       return unless win_item
 
-      Minyaty.debug "tasbar handling click at #{x} - #{win_item[:win].properties["WM_CLASS"]}"
+      Minyaty.debug "taskbar handling click at #{x} - #{win_item[:win].properties["WM_CLASS"]}"
       win_item[:win].raise
     end
   end
