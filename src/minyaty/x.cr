@@ -105,6 +105,7 @@ module Minyaty
       return DISPLAY.query_tree(root)[:children]
                     .map { |child_id| Minyaty::Window.new(child_id) }
                     .reject { |h| h.attributes.map_state == X11::C::IsUnmapped }
+                    .reject { |h| h.id == TASKBAR.taskbar_window.win }
     end
 
     private def self.build_hash(win)

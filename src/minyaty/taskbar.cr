@@ -6,7 +6,6 @@ module Minyaty
 
     def initialize
       @taskbar_window = TaskbarWindow.new
-      refresh
     end
 
     def refresh
