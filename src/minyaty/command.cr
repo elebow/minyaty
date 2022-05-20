@@ -44,6 +44,8 @@ module Minyaty
           CONFIG.last_circulation_direction = :down
           X.circulate_windows_down
         end
+      elsif string.starts_with?("debug-force-x11-error")
+          X.get_window_attributes(999999999999999)
       elsif string == "exit"
         CHANNEL.send(:exit)
       else
