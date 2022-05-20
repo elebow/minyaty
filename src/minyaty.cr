@@ -34,6 +34,7 @@ module Minyaty
     end
   end
 
+  Minyaty::X.setup_error_handling
   Minyaty::X.setup_event_monitoring
   Minyaty::X.all_windows.each(&.raise) # Window#raise takes care of sizing and positioning
   # Event fiber. Monitors X11 events and reacts to them.

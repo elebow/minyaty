@@ -2,6 +2,18 @@ require "x11"
 
 require "./window"
 
+# TODO library bug: It calls `error_database_text` (which doesn't even exist) instead of `get_error_text`
+# monkeypatch it for now
+module X11
+  class Display
+    def error_text(code : Int32) : String
+      buffer = Array(UInt8).new 1024
+      X.get_error_text @dpy, code, buffer.to_unsafe, 1024
+      String.new buffer.to_unsafe
+    end
+  end
+end
+
 module Minyaty
   class X
     include X11::C
@@ -37,6 +49,14 @@ module Minyaty
 
     def self.setup_event_monitoring
       DISPLAY.select_input(ROOT_WINDOW, X11::C::SubstructureNotifyMask | X11::C::SubstructureRedirectMask)
+    end
+
+    def self.setup_error_handling
+      error_handler = ->(display : X11::C::X::PDisplay, error_event : X11::C::X::PErrorEvent) {
+        Minyaty.debug "X11 error: #{DISPLAY.error_text(error_event.value.error_code)}"
+        return 0
+      }
+      X11.set_error_handler(error_handler)
     end
 
     def self.raise_window(win : X11::C::Window, hints = { x: nil, y: nil, width: nil, height: nil })
