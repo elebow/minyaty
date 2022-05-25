@@ -21,16 +21,15 @@ module Minyaty
     DISPLAY = X11::Display.new
     CONNECTION_FD = IO::FileDescriptor.new(DISPLAY.connection_number) # This only works on POSIX
     ROOT_WINDOW = DISPLAY.root_window(0)
-    PROPERTY_ATOMS = %w[WM_STATE WM_CLASS WM_NAME].map { |a| DISPLAY.intern_atom(a, only_if_exists: true) }
     SCREEN_WIDTH = DISPLAY.width(DISPLAY.default_screen_number).to_u32
     SCREEN_HEIGHT = DISPLAY.height(DISPLAY.default_screen_number)
-    MAXIMIZED_ATOMS = Slice[
-      DISPLAY.intern_atom("_NET_WM_STATE_MAXIMIZED_HORZ", only_if_exists: false).to_u64,
-      DISPLAY.intern_atom("_NET_WM_STATE_MAXIMIZED_VERT", only_if_exists: false).to_u64
-    ]
-    XA_NET_WM_STATE = DISPLAY.intern_atom("_NET_WM_STATE", only_if_exists: false)
-    XA_NET_FRAME_EXTENTS = DISPLAY.intern_atom("_NET_FRAME_EXTENTS", only_if_exists: false)
-    # TODO better data structure and naming for these atom constants
+    ATOMS = {
+      useful_properties: %w[WM_STATE WM_CLASS WM_NAME].map { |a| intern_atom(a) },
+      maximized: Slice[intern_atom("_NET_WM_STATE_MAXIMIZED_HORZ"),
+                       intern_atom("_NET_WM_STATE_MAXIMIZED_VERT")],
+      XA_NET_WM_STATE: intern_atom("_NET_WM_STATE"),
+      XA_NET_FRAME_EXTENTS: intern_atom("_NET_FRAME_EXTENTS")
+    }
 
     def self.all_windows
       query_all_windows(ROOT_WINDOW)
@@ -119,8 +118,8 @@ module Minyaty
         1_u32 << 0 | 1_u32 << 1 | 1_u32 << 2 | 1_u32 << 3 | 1_u32 << 6,
         X11::WindowChanges.new(X11::C::X::WindowChanges.new(x: x, y: y, width: width, height: height, stack_mode: 0))
       )
-      X11::C::X.change_property DISPLAY, win, XA_NET_WM_STATE, X11::Atom::Atom, 32, PropModeReplace, MAXIMIZED_ATOMS.to_unsafe.as(PChar), 2
-      X11::C::X.change_property DISPLAY, win, XA_NET_FRAME_EXTENTS, X11::Atom::Cardinal, 32, PropModeReplace, Slice[0_i64, 0_i64, 0_i64, 0_i64].to_unsafe.as(PChar), 4
+      X11::C::X.change_property DISPLAY, win, ATOMS[:XA_NET_WM_STATE], X11::Atom::Atom, 32, PropModeReplace, ATOMS[:maximized].to_unsafe.as(PChar), 2
+      X11::C::X.change_property DISPLAY, win, ATOMS[:XA_NET_FRAME_EXTENTS], X11::Atom::Cardinal, 32, PropModeReplace, Slice[0_i64, 0_i64, 0_i64, 0_i64].to_unsafe.as(PChar), 4
       # TODO should be this, but library is missing overload? DISPLAY.change_property(win, XA_NET_FRAME_EXTENTS, X11::Atom::Cardinal, PropModeReplace, Slice[0_u64, 0_u64, 0_u64, 0_u64])
     end
 
@@ -141,7 +140,7 @@ module Minyaty
     private def self.build_hash(win)
       {
         id:         win,
-        properties: @@property_atoms.to_h do |atom|
+        properties: ATOMS[:useful_properties].to_h do |atom|
           {
             DISPLAY.atom_name(atom),
             get_property(atom, win),
@@ -180,6 +179,10 @@ module Minyaty
     def self.get_window_attributes(win)
       X11::C::X.get_window_attributes(DISPLAY, win, out window_attributes)
       window_attributes
+    end
+
+    def self.intern_atom(name)
+      DISPLAY.intern_atom(name, only_if_exists: false)
     end
   end
 end

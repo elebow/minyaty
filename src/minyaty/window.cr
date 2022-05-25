@@ -13,7 +13,7 @@ module Minyaty
 
     def initialize(id : UInt64)
       @id = id
-      @properties = X::PROPERTY_ATOMS.to_h do |atom|
+      @properties = X::ATOMS[:useful_properties].to_h do |atom|
                       {
                         X::DISPLAY.atom_name(atom),
                         X.get_property(atom, id),
