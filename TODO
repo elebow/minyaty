@@ -34,3 +34,6 @@ bug: window items remain in taskbar after process ends
 	even though they don't show up in output of list-windows command
 
 Prefix output with program name so it can be easily extracted from xsession-errors file
+
+set last category, etc when switching via taskbar click
+	move that logic out of command.cr to Window#raise ?
