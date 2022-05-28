@@ -1,4 +1,5 @@
 require "./category"
+require "./category_all"
 
 module Minyaty
   class Categories
@@ -11,8 +12,16 @@ module Minyaty
     forward_missing_to @categories
 
     def initialize(categories)
-      @categories = categories.map { |cat_h| Category.new(cat_h["name"], patterns: cat_h["patterns"]) }
-      # TODO two categories that always exist: "all", "uncategorized"
+      @categories = categories.map do |cat_h|
+        case cat_h["name"]
+        when "all"
+          CategoryAll.new("all")
+        #when "uncategorized"
+          # TODO
+        else
+          Category.new(cat_h["name"], patterns: cat_h["patterns"])
+        end
+      end
       @last_category = nil
     end
 
