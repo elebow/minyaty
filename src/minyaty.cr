@@ -22,9 +22,8 @@ module Minyaty
   # It's important to exit nicely so we don't leave a lingering socket
   Signal::INT.trap { CHANNEL.send(:exit) }
 
-  # Control fiber. Monitors the control socket for commands from the user.
-  # Send commands with:
-  #   echo list-windows | socat UNIX-CONNECT:/tmp/minyaty_control.socket -
+  # Command fiber. Monitors the control socket for commands from the user.
+  # Send commands with command.sh
   spawn do
     loop do
       connection = socket.accept?
