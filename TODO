@@ -15,8 +15,6 @@ unmap event → circulate up?
 
 commands to show, hide, and toggle taskbar visibility
 
-taskbar clock
-
 Unhandled exception: Missing hash key: "patterns" (KeyError)
 	config file category without pattern
 
@@ -29,12 +27,13 @@ taskbar visual distinction for active window
 taskbar click on category name cycles through
 	or anywhere in a category's region that is not a window item
 
-bug: window items remain in taskbar after process ends
-	even though they don't show up in output of list-windows command
-
 Prefix output with program name so it can be easily extracted from xsession-errors file
 
 set last category, etc when switching via taskbar click
 	move that logic out of command.cr to Window#raise ?
 
 deb package
+
+"all" and "uncategorized" categories should always exist, even if not configured
+	presence in config file only controls whether they appear in taskbar
+	when no categories are defined, "uncategorized" is equal to "all". This is fine.
