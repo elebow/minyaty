@@ -37,3 +37,5 @@ Prefix output with program name so it can be easily extracted from xsession-erro
 
 set last category, etc when switching via taskbar click
 	move that logic out of command.cr to Window#raise ?
+
+deb package
