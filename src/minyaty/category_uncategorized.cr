@@ -1,13 +1,13 @@
 require "./category"
 
 module Minyaty
-  class CategoryAll < Category
+  class CategoryUncategorized < Category
     def initialize(name : String)
       super(name: name, patterns: [] of NamedTuple(pattern: String, hints: WindowHints))
     end
 
     def matching_windows(all_windows)
-      all_windows
+      all_windows.select(&.uncategorized?)
     end
 
     def mark_categorized_windows

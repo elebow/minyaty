@@ -16,6 +16,7 @@ module Minyaty
       last_id = windows.size > 0 ? windows[pointer].id : 0
 
       self.windows = matching_windows(all_windows)
+      mark_categorized_windows # track this for use in the "uncategorized" category
 
       #advance to where we left off, or start from the beginning again
       self.pointer = windows.index { |win| win.id == last_id } || 0
@@ -35,6 +36,10 @@ module Minyaty
         end.sort_by { |win| win.id }
       end
       .reduce { |a, b| a + b } # concatenate
+    end
+
+    def mark_categorized_windows
+      windows.each(&.mark_categorized)
     end
 
     def window_at_pointer

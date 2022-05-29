@@ -1,7 +1,6 @@
 --replace option
 
-taskbar shows categories in order defined in config file
-	config file can specify two special categories: all, uncategorized
+config file should not require pattern for all, uncategorized
 
 alternate window command (like my old alt+esc)
 	also use this to decide which window to raise when the current window is closed

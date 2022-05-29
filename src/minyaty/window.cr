@@ -22,6 +22,7 @@ module Minyaty
       @attributes =  X.get_window_attributes(id)
           # TODO bug in library: Display#window_attributes calls #get_window_property ?
       @hints = { x: nil, y: nil, width: nil, height: nil }
+      @categorized = false
     end
 
     def match?(pattern)
@@ -33,6 +34,14 @@ module Minyaty
 
     def raise
       X.raise_window(id, hints)
+    end
+
+    def mark_categorized
+      @categorized = true
+    end
+
+    def uncategorized?
+      !@categorized
     end
 
     def to_s(io)

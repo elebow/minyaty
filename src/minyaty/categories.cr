@@ -1,5 +1,6 @@
 require "./category"
 require "./category_all"
+require "./category_uncategorized"
 
 module Minyaty
   class Categories
@@ -16,8 +17,8 @@ module Minyaty
         case cat_h["name"]
         when "all"
           CategoryAll.new("all")
-        #when "uncategorized"
-          # TODO
+        when "uncategorized"
+          CategoryUncategorized.new("uncategorized")
         else
           Category.new(cat_h["name"], patterns: cat_h["patterns"])
         end
