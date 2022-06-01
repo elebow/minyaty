@@ -24,6 +24,8 @@ taskbar click on currently-focused window circulates it up
 taskbar visual distinction for active window
 	and alternate window?
 
+taskbar X11 window name and other properties
+
 taskbar click on category name cycles through
 	or anywhere in a category's region that is not a window item
 
