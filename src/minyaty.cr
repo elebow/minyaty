@@ -49,7 +49,7 @@ module Minyaty
     spawn do
       loop do
         TASKBAR.refresh
-        sleep 1 # TODO something more sophisticated. Refresh upon map/unmap event, once per second, and maybe some other events.
+        sleep 1
       end
     end
   end

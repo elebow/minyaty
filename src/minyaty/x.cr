@@ -92,8 +92,10 @@ module Minyaty
         #configure_window_size_position(event.window)
       elsif event.is_a?(X11::MapRequestEvent)
         map_above_and_focus(event.window)
+        Minyaty::TASKBAR.refresh if Minyaty::TASKBAR
       elsif event.is_a?(X11::DestroyWindowEvent)
         # TODO decide where to put focus. subtract one from index in current viewport?
+        Minyaty::TASKBAR.refresh if Minyaty::TASKBAR
       elsif event.is_a?(X11::ButtonEvent) && event.release?
         # TODO send events more generically, somehow. This X utility class shouldn't even know that Minyaty::TASKBAR exists.
         Minyaty::TASKBAR.handle_click(x: event.x)
