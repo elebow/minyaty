@@ -39,3 +39,5 @@ deb package
 "all" and "uncategorized" categories should always exist, even if not configured
 	presence in config file only controls whether they appear in taskbar
 	when no categories are defined, "uncategorized" is equal to "all". This is fine.
+
+Taskbar to top of window stack upon refresh
