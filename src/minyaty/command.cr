@@ -36,6 +36,7 @@ module Minyaty
         CONFIG.last_circulation_direction = :up
         X.circulate_windows_up
       elsif string.starts_with?("circulate-windows-alt")
+        # TODO move most of these commands to methods on Categories, and also use Categories#alt_window to decide which window gets focus after a destroy event
         CONFIG.categories.last_category = nil
         if CONFIG.last_circulation_direction == :down
           CONFIG.last_circulation_direction = :up
