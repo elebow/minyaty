@@ -96,7 +96,7 @@ module Minyaty
       elsif event.is_a?(X11::DestroyWindowEvent)
         # TODO decide where to put focus. subtract one from index in current viewport?
         Minyaty::TASKBAR.refresh if Minyaty::TASKBAR
-      elsif event.is_a?(X11::ButtonEvent) && event.release?
+      elsif event.is_a?(X11::ButtonEvent) && event.release? && event.window == TASKBAR.taskbar_window.win
         # TODO send events more generically, somehow. This X utility class shouldn't even know that Minyaty::TASKBAR exists.
         Minyaty::TASKBAR.handle_click(x: event.x)
       end
