@@ -86,13 +86,16 @@ module Minyaty
 
     def self.handle_event(event)
       if event.is_a?(X11::ConfigureRequestEvent)
-        puts "got a configure event. detail: #{event.detail}"
+        Minyaty.debug "handle ConfigureRequestEvent: #{event.detail}"
 
         # TODO If window should be configured (dialog box, etc). Also mpv. Maybe make this a default allow, with denials in the config, since only vivaldi's non-dialog windows so far are a problem?
         #configure_window_size_position(event.window)
+        Minyaty.debug "handle ConfigureRequestEvent: done"
       elsif event.is_a?(X11::MapRequestEvent)
+        Minyaty.debug "handle MapRequestEvent: #{event.window}"
         map_above_and_focus(event.window)
         Minyaty::TASKBAR.refresh if Minyaty::TASKBAR
+        Minyaty.debug "handle MapRequestEvent: done"
       elsif event.is_a?(X11::DestroyWindowEvent)
         # TODO decide where to put focus. subtract one from index in current viewport?
         Minyaty::TASKBAR.refresh if Minyaty::TASKBAR
@@ -111,6 +114,7 @@ module Minyaty
     end
 
     private def self.configure_window_size_position(win, x = nil, y = nil, width = nil, height = nil)
+      Minyaty.debug "configure_window_size_and_position: win=#{win}"
       x ||= 0
       y ||= CONFIG.taskbar_height
       width ||= SCREEN_WIDTH
@@ -123,20 +127,25 @@ module Minyaty
       X11::C::X.change_property DISPLAY, win, ATOMS[:XA_NET_WM_STATE], X11::Atom::Atom, 32, PropModeReplace, ATOMS[:maximized].to_unsafe.as(PChar), 2
       X11::C::X.change_property DISPLAY, win, ATOMS[:XA_NET_FRAME_EXTENTS], X11::Atom::Cardinal, 32, PropModeReplace, Slice[0_i64, 0_i64, 0_i64, 0_i64].to_unsafe.as(PChar), 4
       # TODO should be this, but library is missing overload? DISPLAY.change_property(win, XA_NET_FRAME_EXTENTS, X11::Atom::Cardinal, PropModeReplace, Slice[0_u64, 0_u64, 0_u64, 0_u64])
+      Minyaty.debug "configure_window_size_and_position: done"
     end
 
     private def self.map_above_and_focus(win)
+      Minyaty.debug "map_above_and_focus: win=#{win}"
       DISPLAY.map_window(win)
       DISPLAY.set_input_focus(win, X11::C::RevertToParent, X11::C::CurrentTime)
       # TODO bug? X11::C::RevertToNone is a UInt64 but set_input_focus wants a Int32
       DISPLAY.flush
+      Minyaty.debug "map_above_and_focus: done"
     end
 
     private def self.query_all_windows(root) : Array(Minyaty::Window)
+      Minyaty.debug "query_all_windows:"
       return DISPLAY.query_tree(root)[:children]
                     .map { |child_id| Minyaty::Window.new(child_id) }
                     .reject { |h| h.attributes.map_state == X11::C::IsUnmapped }
                     .reject { |h| h.id == TASKBAR.taskbar_window.win }
+                    .tap { Minyaty.debug "query_all_windows: done" }
     end
 
     private def self.build_hash(win)
@@ -154,6 +163,7 @@ module Minyaty
     end
 
     def self.get_property(atom, win)
+      Minyaty.debug "get_property: atom=#{atom}, window=#{win}"
       # We have to use `X` directly because the higher-level method converts the result to a String.
       # Sometimes, the result contains \0 characters. TODO explain better.
       # TODO bug? AnyPropertyType is i64, but #get_window_property wants u64)
@@ -175,6 +185,7 @@ module Minyaty
 
       X11::C::X.free prop[:prop]
 
+      Minyaty.debug "get_property: done"
       ret
     end
 
