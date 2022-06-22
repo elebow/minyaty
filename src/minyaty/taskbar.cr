@@ -25,6 +25,7 @@ module Minyaty
     end
 
     def handle_click(x)
+      CONFIG.categories.last_category = nil # TODO A window can be in multiple categories. Decide how to set this appropriately.
       win_item = taskbar_window.find_window_at_location(x)
       return unless win_item
 
