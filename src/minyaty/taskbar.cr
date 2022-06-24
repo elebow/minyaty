@@ -9,8 +9,6 @@ module Minyaty
     end
 
     def refresh
-      CONFIG.categories.refresh
-
       category_regions = CONFIG.categories.map do |category|
         {
           name: category.name,

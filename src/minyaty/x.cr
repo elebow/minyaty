@@ -93,10 +93,12 @@ module Minyaty
       elsif event.is_a?(X11::MapRequestEvent)
         Minyaty.debug "handle MapRequestEvent: #{event.window}"
         map_above_and_focus(event.window)
+        CONFIG.categories.refresh
         Minyaty::TASKBAR.refresh if Minyaty::TASKBAR
         Minyaty.debug "handle MapRequestEvent: done"
       elsif event.is_a?(X11::DestroyWindowEvent)
         # TODO decide where to put focus. subtract one from index in current viewport?
+        CONFIG.categories.refresh
         Minyaty::TASKBAR.refresh if Minyaty::TASKBAR
       elsif event.is_a?(X11::ButtonEvent) && event.release? && event.window == TASKBAR.taskbar_window.win
         # TODO send events more generically, somehow. This X utility class shouldn't even know that Minyaty::TASKBAR exists.
