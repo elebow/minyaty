@@ -143,20 +143,6 @@ module Minyaty
                     .tap { Minyaty.debug "query_all_windows: done" }
     end
 
-    private def self.build_hash(win)
-      {
-        id:         win,
-        properties: ATOMS[:useful_properties].to_h do |atom|
-          {
-            DISPLAY.atom_name(atom),
-            get_property(atom, win),
-          }
-        end,
-        attributes: get_window_attributes(win)
-        # TODO bug in library: Display#window_attributes calls #get_window_property ?
-      }
-    end
-
     def self.get_property(atom, win)
       Minyaty.debug "get_property: atom=#{atom}, window=#{win}"
       # We have to use `X` directly because the higher-level method converts the result to a String.
