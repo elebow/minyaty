@@ -39,8 +39,9 @@ module Minyaty
   # Event fiber. Monitors X11 events and reacts to them.
   spawn do
     loop do
-      Minyaty::X.wait_for_event
-      Minyaty::X.handle_event(Minyaty::X.next_event)
+      Minyaty::X.handle_pending_events
+
+      sleep 0.05
     end
   end
 

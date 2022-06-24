@@ -19,7 +19,6 @@ module Minyaty
     include X11::C
 
     DISPLAY = X11::Display.new
-    CONNECTION_FD = IO::FileDescriptor.new(DISPLAY.connection_number) # This only works on POSIX
     ROOT_WINDOW = DISPLAY.root_window(0)
     SCREEN_WIDTH = DISPLAY.width(DISPLAY.default_screen_number).to_u32
     SCREEN_HEIGHT = DISPLAY.height(DISPLAY.default_screen_number)
@@ -105,12 +104,8 @@ module Minyaty
       end
     end
 
-    def self.wait_for_event
-      CONNECTION_FD.wait_readable
-    end
-
-    def self.next_event
-      DISPLAY.next_event
+    def self.handle_pending_events
+      DISPLAY.pending.times { handle_event(DISPLAY.next_event) }
     end
 
     private def self.configure_window_size_position(win, x = nil, y = nil, width = nil, height = nil)
