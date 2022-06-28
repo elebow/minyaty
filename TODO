@@ -45,3 +45,6 @@ Taskbar to top of window stack upon refresh
 use channel to send refresh command to X taskbar fiber, instead of doing TASKBAR.refresh in X event fiber ?
 	debug: see how ofter X-event-initiated TASKBAR.refresh
 		if it's a lot, maybe just rely on the timer-based refresh? 200msec or something
+
+dialog windows map at configurable origin instead of 0,0
+	command to move to other side of screen? Useful for GIMP filter previews.
