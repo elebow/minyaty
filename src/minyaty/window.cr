@@ -15,7 +15,7 @@ module Minyaty
       @id = id
       @properties = X::ATOMS[:useful_properties].to_h do |atom|
                       {
-                        X::DISPLAY.atom_name(atom),
+                        X::DISPLAY.atom_name(atom), # TODO we can store the atom name when we intern them to save some X11 requests here
                         X.get_property(atom, id),
                       }
                     end
