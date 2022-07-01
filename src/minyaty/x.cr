@@ -111,6 +111,9 @@ module Minyaty
       elsif event.is_a?(X11::ButtonEvent) && event.release? && event.window == TASKBAR.taskbar_window.win
         # TODO send events more generically, somehow. This X utility class shouldn't even know that Minyaty::TASKBAR exists.
         Minyaty::TASKBAR.handle_click(x: event.x)
+      else
+        # TODO X11::CreateWindowEvent, if window is a dialog, raise it immediately
+        Minyaty.debug "got some other event. event.class=#{event.class}"
       end
     end
 
