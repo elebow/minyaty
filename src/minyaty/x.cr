@@ -95,6 +95,7 @@ module Minyaty
         end
 
         # TODO If window should be configured (dialog box, etc). Also mpv. Maybe make this a default allow, with denials in the config, since only vivaldi's non-dialog windows so far are a problem?
+        # TODO respect WM_NORMAL_HINTS maximum size, location
         #configure_window_size_position(event.window)
         Minyaty.debug "handle ConfigureRequestEvent: done"
       elsif event.is_a?(X11::MapRequestEvent)
@@ -168,6 +169,7 @@ module Minyaty
             elsif prop[:actual_format] == 16
               Slice.new(prop[:prop].as(UInt16*), prop[:nitems]).to_a
             elsif prop[:actual_format] == 32
+              # TODO should this always be a long (ie, UInt64 on modern systems)? https://stackoverflow.com/questions/20151386/xchangeproperty-for-an-atom-property-on-a-system-where-atom-is-64-bits
               Slice.new(prop[:prop].as(UInt32*), prop[:nitems]).to_a
             else
               raise "unknown actual_format #{prop[:actual_format]}"
