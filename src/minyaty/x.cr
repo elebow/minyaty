@@ -23,11 +23,12 @@ module Minyaty
     SCREEN_WIDTH = DISPLAY.width(DISPLAY.default_screen_number).to_u32
     SCREEN_HEIGHT = DISPLAY.height(DISPLAY.default_screen_number)
     ATOMS = {
-      useful_properties: %w[WM_STATE WM_CLASS WM_NAME].map { |a| intern_atom(a) },
+      useful_properties: %w[WM_STATE WM_CLASS WM_NAME _NET_WM_WINDOW_TYPE].map { |a| intern_atom(a) },
       maximized: Slice[intern_atom("_NET_WM_STATE_MAXIMIZED_HORZ"),
                        intern_atom("_NET_WM_STATE_MAXIMIZED_VERT")],
       XA_NET_WM_STATE: intern_atom("_NET_WM_STATE"),
-      XA_NET_FRAME_EXTENTS: intern_atom("_NET_FRAME_EXTENTS")
+      XA_NET_FRAME_EXTENTS: intern_atom("_NET_FRAME_EXTENTS"),
+      _NET_WM_WINDOW_TYPE_DIALOG: intern_atom("_NET_WM_WINDOW_TYPE_DIALOG")
     }
 
     def self.all_windows
@@ -86,6 +87,12 @@ module Minyaty
     def self.handle_event(event)
       if event.is_a?(X11::ConfigureRequestEvent)
         Minyaty.debug "handle ConfigureRequestEvent: #{event.detail}"
+        new_window = Minyaty::Window.new(event.window)
+        if new_window.dialog?
+          Minyaty.debug "  type is dialog"
+        else
+          Minyaty.debug "  type is not dialog"
+        end
 
         # TODO If window should be configured (dialog box, etc). Also mpv. Maybe make this a default allow, with denials in the config, since only vivaldi's non-dialog windows so far are a problem?
         #configure_window_size_position(event.window)

@@ -36,6 +36,10 @@ module Minyaty
       X.raise_window(id, hints)
     end
 
+    def dialog?
+      properties["_NET_WM_WINDOW_TYPE"].try(&.first) == X::ATOMS[:_NET_WM_WINDOW_TYPE_DIALOG]
+    end
+
     def mark_categorized
       @categorized = true
     end
