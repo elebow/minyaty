@@ -1,10 +1,10 @@
 --replace option
 
+non-WM mode, where minyaty is just a switcher
+
 config file should not require pattern for all, uncategorized
 
 use circulate-windows-alt logic to decide which window to raise when the current window is closed
-
-non-WM mode, where minyaty is just a switcher
 
 new windows can steal focus only if child of current window
 	or share a non-root parent with current window?
@@ -23,7 +23,10 @@ taskbar click on currently-focused window circulates it up
 taskbar visual distinction for active window
 	and alternate window?
 
-taskbar X11 window name and other properties
+taskbar shows X11 window name and other properties
+
+taskbar has appropriate EWMH properties for a task bar. See _NET_WM_STRUT, _NET_WORKAREA.
+	and other EWMH requirements, like _NET_SUPPORTING_WM_CHECK. See https://specifications.freedesktop.org/wm-spec/wm-spec-latest.html
 
 taskbar click on category name cycles through
 	or anywhere in a category's region that is not a window item
