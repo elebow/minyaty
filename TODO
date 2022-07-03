@@ -2,8 +2,7 @@
 
 config file should not require pattern for all, uncategorized
 
-alternate window command (like my old alt+esc)
-	also use this to decide which window to raise when the current window is closed
+use circulate-windows-alt logic to decide which window to raise when the current window is closed
 
 non-WM mode, where minyaty is just a switcher
 
@@ -31,8 +30,7 @@ taskbar click on category name cycles through
 
 Prefix output with program name so it can be easily extracted from xsession-errors file
 
-set last category, etc when switching via taskbar click
-	move that logic out of command.cr to Window#raise ?
+move last_category logic out of command.cr to Window#raise ?
 
 deb package
 
