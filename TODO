@@ -51,3 +51,5 @@ dialog windows map at configurable origin instead of 0,0
 	command to move to other side of screen? Useful for GIMP filter previews.
 
 ability to designate a window as always-on-top
+
+only query_all_windows once upon event, store them in an internal object, populate each with properties. Query the internal object (by window_id) when needed.
