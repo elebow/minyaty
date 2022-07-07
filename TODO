@@ -49,3 +49,5 @@ use channel to send refresh command to X taskbar fiber, instead of doing TASKBAR
 
 dialog windows map at configurable origin instead of 0,0
 	command to move to other side of screen? Useful for GIMP filter previews.
+
+ability to designate a window as always-on-top
