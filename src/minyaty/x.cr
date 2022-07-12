@@ -66,8 +66,12 @@ module Minyaty
     end
 
     def self.raise_window(win : X11::C::Window, hints = { x: nil, y: nil, width: nil, height: nil })
+      Minyaty.debug "raise_window: win=#{win}, last_window=#{Minyaty::Window.new(@@last_window_id)}, current_window=#{Minyaty::Window.new(@@current_window_id)}"
+
+
       configure_window_size_position(win, **hints)
       map_above_and_focus(win)
+      Minyaty.debug "raise_window: done"
     end
 
     def self.hide_current_window
@@ -86,7 +90,7 @@ module Minyaty
 
     def self.handle_event(event)
       if event.is_a?(X11::ConfigureRequestEvent)
-        Minyaty.debug "handle ConfigureRequestEvent: #{event.detail}"
+        Minyaty.debug "\nhandle ConfigureRequestEvent: #{event.detail}"
         new_window = Minyaty::Window.new(event.window)
         if new_window.dialog?
           Minyaty.debug "  type is dialog"
@@ -99,7 +103,7 @@ module Minyaty
         #configure_window_size_position(event.window)
         Minyaty.debug "handle ConfigureRequestEvent: done"
       elsif event.is_a?(X11::MapRequestEvent)
-        Minyaty.debug "handle MapRequestEvent: #{event.window}"
+        Minyaty.debug "\nhandle MapRequestEvent: #{event.window}"
         map_above_and_focus(event.window)
         CONFIG.categories.refresh
         Minyaty::TASKBAR.refresh if Minyaty::TASKBAR
@@ -113,7 +117,7 @@ module Minyaty
         Minyaty::TASKBAR.handle_click(x: event.x)
       else
         # TODO X11::CreateWindowEvent, if window is a dialog, raise it immediately
-        Minyaty.debug "got some other event. event.class=#{event.class}"
+        Minyaty.debug "\ngot some other event. event.class=#{event.class}"
       end
     end
 
@@ -157,7 +161,7 @@ module Minyaty
     end
 
     def self.get_property(atom, win)
-      Minyaty.debug "get_property: atom=#{atom}, window=#{win}"
+      Minyaty.debug "get_property: atom=#{atom}, window=#{win}" # TODO verbose debug
       # We have to use `X` directly because the higher-level method converts the result to a String.
       # Sometimes, the result contains \0 characters. TODO explain better.
       # TODO bug? AnyPropertyType is i64, but #get_window_property wants u64)

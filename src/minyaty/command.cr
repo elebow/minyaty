@@ -11,6 +11,7 @@ module Minyaty
     end
 
     def run
+      Minyaty.debug "\ncommand: #{string}"
       if string.nil? || string.matches?(/\A\s*\Z/)
         Minyaty.debug "got nil command from socket"
       elsif string == "list-windows"

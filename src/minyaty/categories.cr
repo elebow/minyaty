@@ -51,6 +51,7 @@ module Minyaty
     end
 
     def refresh
+      Minyaty.debug "Categories#refresh:"
       # get list of all windows from X11
       all_windows = Minyaty::X.all_windows
 
@@ -59,6 +60,7 @@ module Minyaty
 
       # TODO command to do the following, to help debugging configs:
       #puts categories.to_h { |cat| {cat.name, cat.windows.map(&.properties)} }
+      Minyaty.debug "Categories#refresh: done"
     end
   end
 end

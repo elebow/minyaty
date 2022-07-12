@@ -12,6 +12,7 @@ module Minyaty
     @hints : WindowHints
 
     def initialize(id : UInt64)
+      Minyaty.debug "Window#initialize: id=#{id}"
       @id = id
       @properties = X::ATOMS[:useful_properties].to_h do |atom|
                       {
@@ -23,6 +24,7 @@ module Minyaty
           # TODO bug in library: Display#window_attributes calls #get_window_property ?
       @hints = { x: nil, y: nil, width: nil, height: nil }
       @categorized = false
+      Minyaty.debug "Window#initialize: done (#{@properties["WM_CLASS"]}, #{@properties["WM_NAME"]})"
     end
 
     def match?(pattern)
@@ -49,6 +51,10 @@ module Minyaty
     end
 
     def to_s(io)
+      io.puts "<#{self.class} #{id} #{properties["WM_CLASS"].try(&.join(","))}>"
+    end
+
+    def inspect(io)
       io.puts "<#{self.class} id=#{id} properties=#{properties} attributes=#{attributes} hints=#{hints}>"
     end
   end
