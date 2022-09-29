@@ -55,3 +55,7 @@ ability to designate a window as always-on-top
 only query_all_windows once upon event, store them in an internal object, populate each with properties. Query the internal object (by window_id) when needed.
 
 browser window titles can easily contain substrings that match other categories inadvertently
+
+GUI tool that accepts a text string and raises a window by fuzzy match
+
+toggle debug mode with a command
