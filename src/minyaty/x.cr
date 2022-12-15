@@ -80,6 +80,7 @@ module Minyaty
 
       configure_window_size_position(win, **hints)
       DISPLAY.set_input_focus(win, X11::C::RevertToParent, X11::C::CurrentTime) # TODO this seems to be necessary here, so remove it from other places?
+      Minyaty::TASKBAR.refresh if Minyaty::TASKBAR # refresh now, so the current-window visual distinction is visible immediately
       Minyaty.debug "raise_window: done"
     end
 
