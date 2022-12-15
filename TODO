@@ -20,8 +20,7 @@ Unhandled exception: Missing hash key: "patterns" (KeyError)
 taskbar click on currently-focused window circulates it up
 	or other, configurable behavior
 
-taskbar visual distinction for active window
-	and alternate window?
+taskbar visual distinction for alternate window?
 
 taskbar shows X11 window name and other properties
 
