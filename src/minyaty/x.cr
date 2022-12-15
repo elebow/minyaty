@@ -31,12 +31,15 @@ module Minyaty
       _NET_WM_WINDOW_TYPE_DIALOG: intern_atom("_NET_WM_WINDOW_TYPE_DIALOG")
     }
 
+    @@current_window_id : X11::C::Window = 0
+    @@last_window_id : X11::C::Window = 0
+
     def self.all_windows
       query_all_windows(ROOT_WINDOW)
     end
 
-    def self.current_window
-      DISPLAY.input_focus[:focus]
+    def self.current_window_id
+      @@current_window_id
     end
 
     def self.find_window(str : String)
@@ -68,50 +71,86 @@ module Minyaty
     def self.raise_window(win : X11::C::Window, hints = { x: nil, y: nil, width: nil, height: nil })
       Minyaty.debug "raise_window: win=#{win}, last_window=#{Minyaty::Window.new(@@last_window_id)}, current_window=#{Minyaty::Window.new(@@current_window_id)}"
 
+      unless win == @@current_window_id
+        Minyaty.debug "updating last and current window IDs"
+        @@last_window_id = @@current_window_id
+        @@current_window_id = win
+      end
+      Minyaty.debug "last_window=#{Minyaty::Window.new(@@last_window_id)}, current_window=#{Minyaty::Window.new(@@current_window_id)}"
 
       configure_window_size_position(win, **hints)
-      map_above_and_focus(win)
+      DISPLAY.set_input_focus(win, X11::C::RevertToParent, X11::C::CurrentTime) # TODO this seems to be necessary here, so remove it from other places?
       Minyaty.debug "raise_window: done"
     end
 
     def self.hide_current_window
-      DISPLAY.unmap_window(current_window)
+      DISPLAY.unmap_window(@@current_window_id)
+      # TODO raise last_win
     end
 
     def self.circulate_windows_down
+      # TODO save current window as last_win
       DISPLAY.circulate_subwindows_down(ROOT_WINDOW)
       DISPLAY.flush
     end
 
     def self.circulate_windows_up
+      # TODO save current window as last_win
       DISPLAY.circulate_subwindows_up(ROOT_WINDOW)
       DISPLAY.flush
     end
 
     def self.handle_event(event)
       if event.is_a?(X11::ConfigureRequestEvent)
+        # Note that windows with `override-redirect` will not generate these events
+        #  but they do generate ConfigureEvents
         Minyaty.debug "\nhandle ConfigureRequestEvent: #{event.detail}"
         new_window = Minyaty::Window.new(event.window)
-        if new_window.dialog?
+        if new_window.dialog? # TODO or configurable pattern (or inverse)
           Minyaty.debug "  type is dialog"
+          # TODO map above and set @@last_window_id, @@current_window_id
         else
           Minyaty.debug "  type is not dialog"
+          # TODO map below
         end
 
-        # TODO If window should be configured (dialog box, etc). Also mpv. Maybe make this a default allow, with denials in the config, since only vivaldi's non-dialog windows so far are a problem?
         # TODO respect WM_NORMAL_HINTS maximum size, location
         #configure_window_size_position(event.window)
         Minyaty.debug "handle ConfigureRequestEvent: done"
+      elsif event.is_a?(X11::ConfigureEvent)
+        Minyaty.debug "\nhandle ConfigureEvent: #{event.window}"
+        if event.above != @@last_window_id && event.window != @@current_window_id ## TODO is this robust?
+          @@last_window_id = @@current_window_id# || DISPLAY.input_focus[:focus]
+          @@current_window_id = event.window
+          Minyaty.debug "last_window #{Minyaty::Window.new(@@last_window_id)}, current_window #{Minyaty::Window.new(@@current_window_id)}"
+          new_window = Minyaty::Window.new(event.window)
+          debug_window_above = Minyaty::Window.new(event.above)
+        end
+        Minyaty.debug "handle ConfigureEvent: done"
       elsif event.is_a?(X11::MapRequestEvent)
+        # Note that windows with `override-redirect` will not generate these events
+        #  but they do generate MapEvents
         Minyaty.debug "\nhandle MapRequestEvent: #{event.window}"
+
+        @@last_window_id = @@current_window_id# || DISPLAY.input_focus[:focus]
+        @@current_window_id = event.window
+        Minyaty.debug "last_window #{Minyaty::Window.new(@@last_window_id)}, current_window #{Minyaty::Window.new(@@current_window_id)}"
+
         map_above_and_focus(event.window)
         CONFIG.categories.refresh
         Minyaty::TASKBAR.refresh if Minyaty::TASKBAR
         Minyaty.debug "handle MapRequestEvent: done"
       elsif event.is_a?(X11::DestroyWindowEvent)
-        # TODO decide where to put focus. subtract one from index in current viewport?
+        Minyaty.debug "handle DestroyWindowEvent: #{event.window}"
+        if all_windows.includes?(event.window) # all_windows only has top-level windows (children of root). #TODO don't re-query all windows every time we handle this event
+          DISPLAY.set_input_focus(@@last_window_id, X11::C::RevertToParent, X11::C::CurrentTime)
+        end
         CONFIG.categories.refresh
         Minyaty::TASKBAR.refresh if Minyaty::TASKBAR
+        Minyaty.debug "handle DestroyWindowEvent: done"
+      elsif event.is_a?(X11::UnmapEvent) && event.window == @@current_window_id
+        Minyaty.debug "current_window unmapped. Will raise last_window #{Minyaty::Window.new(@@last_window_id)}"
+        raise_window(@@last_window_id)
       elsif event.is_a?(X11::ButtonEvent) && event.release? && event.window == TASKBAR.taskbar_window.win
         # TODO send events more generically, somehow. This X utility class shouldn't even know that Minyaty::TASKBAR exists.
         Minyaty::TASKBAR.handle_click(x: event.x)
