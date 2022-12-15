@@ -2,7 +2,7 @@
 
 Minyaty is an X11 window manager that emphasizes low-effort switching between full-screen windows.
 
-Rather than a stacking or tiling model, Minyaty uses a switching model: It sizes all windows to cover the entire screen and provides powerful tools to quickly raise the window you want.
+Rather than a stacking or tiling model, Minyaty uses a switching model: It provides powerful tools to quickly raise the window you want, and the chosen window fills the entire screen.
 
 When configured appropriately, a given window can be raised with a short, deterministic series of keystrokes. For example, in my configuration, `alt + F1` raises the terminal, `alt + F2` raises the primary browser, and `alt + F2, F2` raises the secondary browser. `alt + tab` alternates between the current and previous windows, and `alt + esc` cycles backwards through window history. See below for configuration and command documentation.
 
