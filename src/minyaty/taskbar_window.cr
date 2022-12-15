@@ -44,7 +44,8 @@ module Minyaty
 
     @win : X11::C::Window
     @gc : X11::C::X::GC
-    @font_struct : X11::FontStruct
+    @base_font : X11::FontStruct
+    @bold_font : X11::FontStruct
 
     def initialize
       win_attrs = X11::SetWindowAttributes.new
@@ -68,7 +69,9 @@ module Minyaty
 
       gc_values = X11::GCValues.new(X11::C::X::GCValues.new)
       @gc = Minyaty::X::DISPLAY.create_gc(@win, 0, gc_values)
-      @font_struct = Minyaty::X::DISPLAY.query_font(X11.g_context_from_gc(@gc))
+      # TODO use Xft instead of this legacy X11 font mechanism. There do not currently exist Crystal bindings for libxft.
+      @base_font = Minyaty::X::DISPLAY.load_query_font("-*-clean-medium-r-*-*-16-*-*-*-*-*-*-*")
+      @bold_font = Minyaty::X::DISPLAY.load_query_font("-*-clean-bold-r-*-*-16-*-*-*-*-*-*-*")
 
       @window_item_locations = [] of NamedTuple(left: Int32, right: Int32, win: Window) # This is redundant, but the compiler doesn't know that this variable will always be set before access
     end
@@ -81,18 +84,24 @@ module Minyaty
 
       category_width = (Minyaty::X::SCREEN_WIDTH / category_regions.size).to_i # TODO weight by number of items? TODO leave space for clock, if configured
       category_regions.each_with_index do |category, i|
+        Minyaty::X::DISPLAY.set_font(@gc, @base_font.to_x.fid)
         cursor = category_width * i
         Minyaty::X::DISPLAY.draw_line(@win, @gc, cursor, 0, cursor, 15)
         cursor += 4
 
         cat_label = "#{category[:name]}:"
         Minyaty::X::DISPLAY.draw_string(@win, @gc, cursor, 11, cat_label)
-        cursor += @font_struct.text_width(cat_label) + 10
+        cursor += @base_font.text_width(cat_label) + 10
 
         category[:windows].each do |w|
           w_left = cursor
+          if Minyaty::X.current_window_id == w[:win].id
+            Minyaty::X::DISPLAY.set_font(@gc, @bold_font.to_x.fid)
+          else
+            Minyaty::X::DISPLAY.set_font(@gc, @base_font.to_x.fid)
+          end
           Minyaty::X::DISPLAY.draw_string(@win, @gc, cursor, 11, w[:text])
-          cursor += @font_struct.text_width(w[:text])
+          cursor += @base_font.text_width(w[:text])
 
           @window_item_locations.push({ left: w_left, right: cursor, win: w[:win]})
 
