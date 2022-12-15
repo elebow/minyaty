@@ -29,6 +29,7 @@ module Minyaty
 
       Minyaty.debug "taskbar handling click at #{x} - #{win_item[:win].properties["WM_CLASS"]}"
       win_item[:win].raise
+      refresh # force a refresh, so the current-window visual distinction is visible immediately
     end
   end
 end
