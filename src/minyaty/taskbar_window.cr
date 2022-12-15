@@ -109,7 +109,7 @@ module Minyaty
         end
       end
 
-      cursor = (Minyaty::X::SCREEN_WIDTH - 120).to_i32
+      cursor = (Minyaty::X::SCREEN_WIDTH - 160).to_i32
       Minyaty::X::DISPLAY.draw_string(@win, @gc, cursor, 11, Time.local.to_s("%Y-%m-%d %H:%M:%S"))
 
       Minyaty::X::DISPLAY.flush
