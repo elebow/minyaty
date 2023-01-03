@@ -17,6 +17,7 @@ module Minyaty
     puts str if CONFIG.debug_mode?
   end
 
+  File.delete?(CONFIG.control_socket_path) # delete the control socket, and don't raise an exception if it doesn't exist
   socket = UNIXServer.new(CONFIG.control_socket_path)
 
   # It's important to exit nicely so we don't leave a lingering socket
